@@ -46,8 +46,11 @@ public class Controller {
         if (txtField.getText().toLowerCase().contains(".mp4") ||
             txtField.getText().toLowerCase().contains(".mkv") ||
             txtField.getText().toLowerCase().contains(".mpg") ||
+            txtField.getText().toLowerCase().contains(".mpeg") ||
             txtField.getText().toLowerCase().contains(".wmv") ||
-            txtField.getText().toLowerCase().contains(".flv")) {
+            txtField.getText().toLowerCase().contains(".flv") ||
+            txtField.getText().toLowerCase().contains(".webm") ||
+            txtField.getText().toLowerCase().contains(".avi")) {
         /*    ##########  FOR FUTURE PLAYING VIDEO  ##########
           pb = new ProcessBuilder("mplayer", "-slave", "-quiet", "-idle", tmpPath).start();
           Media media = new Media(getClass().getResource("test.mp4").toString());
@@ -61,11 +64,13 @@ public class Controller {
             String movieImg = ffmpg + " -w -t='00:10:00' -c jpg -i " + tmpPath +
                                                     " -s 800 -o /tmp/image.jpg";
             pb = Runtime.getRuntime().exec(movieImg);
+            pb.waitFor();
             imgPath = new Image("file://" + "/tmp/image.jpg");
             tmpPath = "/tmp/image.jpg";
         }
-        else
+        else {
             imgPath = new Image("file://" + tmpPath);
+        }
 
  							imgView.setFitWidth(500);
 								imgView.setFitHeight(375);
