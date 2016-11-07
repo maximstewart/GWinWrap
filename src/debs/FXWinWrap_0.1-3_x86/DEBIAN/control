@@ -1,0 +1,9 @@
+Package: FXWinWrap
+Version: 0.1-2
+Section: base
+Priority: optional
+Architecture: i386
+Depends: openjdk-8-jre (>= 8u45-b14-1), mplayer2 (>=2.0-728-g2c378c7-4), gifsicle (>=1.86-1), nitrogen (>=1.5.2-2)
+Maintainer: Maxim Stewart maximstewart1@gmail.com
+Description: FXWinWrap
+ A GUI to handle setting XWinWrap options.

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=FXWinWrap
+Comment=JavaFX gui for XWinWrap
+Exec=/bin/fxwinwrap
+Icon=/opt/FXWinWrap/resources/fxwinwrap.png
+Terminal=false
+Type=Application
+Categories=Applications;System;
+MimeType=application/fxml;
