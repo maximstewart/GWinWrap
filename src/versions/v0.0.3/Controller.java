@@ -15,9 +15,9 @@ import java.io.*;
 
 
 public class Controller {
-	 		private DirectoryChooser folderChooser = new DirectoryChooser();  // Selects a dir
-  		private FileChooser fileChooser = new FileChooser();  // Selects a file
- 			private FileWriter fileWriter;  // Writes to files
+    private DirectoryChooser folderChooser = new DirectoryChooser();  // Selects a dir
+    private FileChooser fileChooser = new FileChooser();  // Selects a file
+    private FileWriter fileWriter;  // Writes to files
     private File directory, sveFileLoc;  // Path to file or dir
     private Image pth = new Image(".");  // Path to image
     private ImageView imgView = new ImageView(pth);  // Image view area
@@ -35,7 +35,7 @@ public class Controller {
     @FXML private CheckBox lftScrn, rghtScrn, useXSvrn;  // Check boxes
     @FXML private ChoiceBox<?> listLftRes, listRgthRes, listSaveLoc; // Choice box fields
     @FXML private Button applyBttn, closeBttn, fileBttn, clear, // Buttons
-                         killBttn, restartBttn, saveBttn;
+                  killBttn, restartBttn, saveBttn;
 
     // This method is called by the FXMLLoader when initialization is complete
     @FXML void initialize() {
@@ -93,38 +93,38 @@ public class Controller {
                     } catch(Throwable imgIOErr) {
                             System.out.println(imgIOErr);
                     }
-        												imgView =  new ImageView("file:///tmp/image.png");
- 					              imgView.setFitWidth(300); // Need these here to get grid properly.
-						              imgView.setFitHeight(200);
-					 		        				tilePane.getChildren().add(imgView);
+        	    imgView =  new ImageView("file:///tmp/image.png");
+ 		    imgView.setFitWidth(300); // Need these here to get grid properly.
+		    imgView.setFitHeight(200);
+		    tilePane.getChildren().add(imgView);
                     imgView.setOnMouseClicked(mouse -> {
-												            if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
-												                mouse.consume();
-								                    try {
-                                  pb = Runtime.getRuntime().exec(vExec);
-								                    } catch(IOException vidIOErr) {
-								                            throw new UncheckedIOException(vidIOErr);
-								                    }
-												            }
+		        if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
+			    mouse.consume();
+			         try {
+                                      pb = Runtime.getRuntime().exec(vExec);
+				 } catch(IOException vidIOErr) {
+				      throw new UncheckedIOException(vidIOErr);
+				 }
+			}
                         filePathField.setText(path);
                     });
             } else if(fileList[i].getName().contains(".png") || fileList[i].getName().contains(".jpg")||
                       fileList[i].getName().contains(".gif") || fileList[i].getName().contains(".jpeg")) {
-												              imgView =  new ImageView("file://" + fileList[i]);
-			                       String title = "" + fileList[i];
-												              imgView.setFitWidth(300); // Need these here to get grid properly.
-												              imgView.setFitHeight(200);
-								 			              tilePane.getChildren().add(imgView);
-												              final ImageView imgViewPoped =  new ImageView("file://" + fileList[i]);
-			                       // image click actions
-			                       imgView.setOnMouseClicked(mouse -> {
-								                      if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
-								                          mouse.consume();
-    			                           displayImg(imgViewPoped, title);
-       								               }
+		          imgView =  new ImageView("file://" + fileList[i]);
+			  String title = "" + fileList[i];
+			  imgView.setFitWidth(300); // Need these here to get grid properly.
+			  imgView.setFitHeight(200);
+			  tilePane.getChildren().add(imgView);
+			  final ImageView imgViewPoped =  new ImageView("file://" + fileList[i]);
+			  // image click actions
+			  imgView.setOnMouseClicked(mouse -> {
+			  if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
+			          mouse.consume();
+    			          displayImg(imgViewPoped, title);
+       			      }
                           filePathField.setText(path);
-			                       });
-								    } else {
+			  });
+	    } else {
                    System.out.println("Not a video or image file.");
             }
         }
