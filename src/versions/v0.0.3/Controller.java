@@ -15,16 +15,15 @@ import java.io.*;
 
 
 public class Controller {
-    private DirectoryChooser folderChooser = new DirectoryChooser();  // Selects a dir
-    private FileChooser fileChooser = new FileChooser();  // Selects a file
-    private FileWriter fileWriter;  // Writes to files
+	 		private DirectoryChooser folderChooser = new DirectoryChooser();  // Selects a dir
+  		private FileChooser fileChooser = new FileChooser();  // Selects a file
+ 			private FileWriter fileWriter;  // Writes to files
     private File directory, sveFileLoc;  // Path to file or dir
     private Image pth = new Image(".");  // Path to image
     private ImageView imgView = new ImageView(pth);  // Image view area
     private Process pb;  // Process runner
     private String tmpPath, resolution, xScreenVal, output,
                    startScrpt = System.getProperty("user.dir") + "/resources/bin/StartXWW.sh",  // Gets shell that starts stuff local
-                   ffmpg = System.getProperty("user.dir") + "/resources/bin/ffmpegthumbnailer",  // Gets ffmpeg local
                    textAreaPth = "";
     private int applyType = 1;
     private Stage fileChooserStage;
@@ -35,10 +34,10 @@ public class Controller {
     @FXML private CheckBox lftScrn, rghtScrn, useXSvrn;  // Check boxes
     @FXML private ChoiceBox<?> listLftRes, listRgthRes, listSaveLoc; // Choice box fields
     @FXML private Button applyBttn, closeBttn, fileBttn, clear, // Buttons
-                  killBttn, restartBttn, saveBttn;
+                         killBttn, restartBttn, saveBttn;
 
     // This method is called by the FXMLLoader when initialization is complete
-    @FXML void initialize() {
+    @FXML void initialize() throws Exception {
         assert clear != null : "fx:id=\"clear\" was not injected: check your FXML file 'Window.fxml'.";
         assert closeBttn != null : "fx:id=\"closeBttn\" was not injected: check your FXML file 'Window.fxml'.";
         assert dirLbl != null : "fx:id=\"dirLbl\" was not injected: check your FXML file 'Window.fxml'.";
@@ -53,6 +52,8 @@ public class Controller {
         assert tilePane != null : "fx:id=\"tilePane\" was not injected: check your FXML file 'Window.fxml'.";
         assert useXSvrn != null : "fx:id=\"useXSvrn\" was not injected: check your FXML file 'Window.fxml'.";
         // Initialize your logic here: all @FXML variables will have been injected
+
+        ffmpegChker();
     }
 
     // Handler for TextArea[fx:id="dirPathField"] onKeyReleased
@@ -67,6 +68,7 @@ public class Controller {
              System.out.println("Not calling newDir...");
     }
 
+    // Scan selected dir
     public void newDir() {
         Stage stage = new Stage();
         if (textAreaPth != "")
@@ -84,52 +86,53 @@ public class Controller {
                 fileList[i].getName().contains(".mpg") || fileList[i].getName().contains(".wmv") ||
                 fileList[i].getName().contains(".mkv") || fileList[i].getName().contains(".flv") ||
                 fileList[i].getName().contains(".webm") || fileList[i].getName().contains(".avi")) {
-                    String movieImg = ffmpg + " -w -t='00:30:00' -c png -i " + fileList[i] +
-                                                                " -s 800 -o /tmp/image.png",
+                    String movieImg = "ffmpegthumbnailer -w -t='00:30:00' -c png -i " + fileList[i] +
+                                                                " -s 300 -o /tmp/image.png",
                            vExec = "mplayer " + fileList[i];
                     try {
                         pb = Runtime.getRuntime().exec(movieImg);
                         pb.waitFor();
+                            System.out.println(movieImg);
                     } catch(Throwable imgIOErr) {
                             System.out.println(imgIOErr);
                     }
-        	    imgView =  new ImageView("file:///tmp/image.png");
- 		    imgView.setFitWidth(300); // Need these here to get grid properly.
-		    imgView.setFitHeight(200);
-		    tilePane.getChildren().add(imgView);
+        												imgView =  new ImageView("file:///tmp/image.png");
+ 					              imgView.setFitWidth(300); // Need these here to get grid properly.
+						              imgView.setFitHeight(200);
+					 		        				tilePane.getChildren().add(imgView);
                     imgView.setOnMouseClicked(mouse -> {
-		        if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
-			    mouse.consume();
-			         try {
-                                      pb = Runtime.getRuntime().exec(vExec);
-				 } catch(IOException vidIOErr) {
-				      throw new UncheckedIOException(vidIOErr);
-				 }
-			}
+												            if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
+												                mouse.consume();
+								                    try {
+                                  pb = Runtime.getRuntime().exec(vExec);
+								                    } catch(IOException vidIOErr) {
+								                            throw new UncheckedIOException(vidIOErr);
+								                    }
+												            }
                         filePathField.setText(path);
                     });
             } else if(fileList[i].getName().contains(".png") || fileList[i].getName().contains(".jpg")||
                       fileList[i].getName().contains(".gif") || fileList[i].getName().contains(".jpeg")) {
-		          imgView =  new ImageView("file://" + fileList[i]);
-			  String title = "" + fileList[i];
-			  imgView.setFitWidth(300); // Need these here to get grid properly.
-			  imgView.setFitHeight(200);
-			  tilePane.getChildren().add(imgView);
-			  final ImageView imgViewPoped =  new ImageView("file://" + fileList[i]);
-			  // image click actions
-			  imgView.setOnMouseClicked(mouse -> {
-			  if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
-			          mouse.consume();
-    			          displayImg(imgViewPoped, title);
-       			      }
+												              imgView =  new ImageView("file://" + fileList[i]);
+			                       String title = "" + fileList[i];
+												              imgView.setFitWidth(300); // Need these here to get grid properly.
+												              imgView.setFitHeight(200);
+								 			              tilePane.getChildren().add(imgView);
+												              final ImageView imgViewPoped =  new ImageView("file://" + fileList[i]);
+			                       // image click actions
+			                       imgView.setOnMouseClicked(mouse -> {
+								                      if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
+								                          mouse.consume();
+    			                           displayImg(imgViewPoped, title);
+       								               }
                           filePathField.setText(path);
-			  });
-	    } else {
+			                       });
+								    } else {
                    System.out.println("Not a video or image file.");
             }
         }
     }
-
+    // Open image in new window
     public void displayImg(ImageView imgViewPoped, String title) {
         Stage popOut = new Stage();
         Pane pane = new Pane();
@@ -207,11 +210,24 @@ public class Controller {
                 applyType = 2;
           //VIDEO
         } else {
-                output = "xwinwrap -ov -g " + resolution + " -st -sp -b -nf -s -ni -- mplayer -wid WID -nosound -loop 0 " + filePathField.getText();
+                output = "xwinwrap -ov -g " + resolution + " -st -sp -b -nf -s -ni -- mplayer -wid WID -really-quiet -nosound -loop 0 " + filePathField.getText();
                 fileWriter.write(output);
                 applyType = 1;
         }
     fileWriter.close();
+    }
+
+    void ffmpegChker() throws Exception {
+            File ffmpgLoc = new File("/usr/bin/ffmpegthumbnailer");
+            boolean exists = ffmpgLoc.exists();
+            System.out.println("" + exists);
+            if (exists) {
+               System.out.println("Ffmpeg is present....");
+             } else {
+               String installer = System.getProperty("user.dir") + "/resources/bin/InstallFFMPEGTHUMB.sh";
+															pb = Runtime.getRuntime().exec(installer);
+															pb.waitFor();
+            }
     }
     // Run changes
     @FXML void applySttngs(ActionEvent event) throws Exception {
