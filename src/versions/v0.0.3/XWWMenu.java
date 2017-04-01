@@ -13,7 +13,7 @@ public class XWWMenu extends Application {
         scene.getStylesheets().add("resources/stylesheet.css");
         stage.setScene(scene);
         //stage.setResizable(false);  // keeps window from resizing
-        stage.setTitle("XWinWrap Menu");
+        stage.setTitle("FXWinWrap");
         stage.setMinWidth(800);
         stage.setMinHeight(600);
         stage.show();

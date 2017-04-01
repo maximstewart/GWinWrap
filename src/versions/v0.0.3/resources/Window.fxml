@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.collections.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
 <?scenebuilder-background-color 0x444444ff?>
 
-<AnchorPane minHeight="300.0" minWidth="300.0" prefHeight="600.0" prefWidth="950.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="Controller">
+<AnchorPane minHeight="300.0" minWidth="300.0" prefHeight="600.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
   <children>
     <TextField id="txtDirPath" fx:id="dirPathField" blendMode="DIFFERENCE" onKeyReleased="#onEnter" prefWidth="880.0" promptText="Directory Path" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="70.0" AnchorPane.topAnchor="0.0" />
     <Button fx:id="clear" mnemonicParsing="false" onAction="#clearBttnClick" text="Clear" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -146,7 +152,7 @@
     </ChoiceBox>
     <CheckBox fx:id="lftScrn" layoutX="211.0" mnemonicParsing="false" prefWidth="114.17000000000002" selected="true" text="Left Screen" AnchorPane.bottomAnchor="123.0" />
     <CheckBox fx:id="rghtScrn" allowIndeterminate="false" mnemonicParsing="false" prefWidth="114.17000000000002" text="Right Screen" AnchorPane.bottomAnchor="123.0" AnchorPane.rightAnchor="95.0" />
-    <CheckBox fx:id="useXSvrn" mnemonicParsing="false" text="Use XScreenSaver" AnchorPane.bottomAnchor="170.0" AnchorPane.leftAnchor="489.0" AnchorPane.rightAnchor="320.0" />
+    <CheckBox fx:id="useXSvrn" layoutX="459.0" layoutY="421.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="168.0" text="Use XScreenSaver" AnchorPane.bottomAnchor="161.0" AnchorPane.leftAnchor="459.0" AnchorPane.rightAnchor="323.0" />
     <Label layoutX="211.0" text="Left Screen Resolutions:" AnchorPane.bottomAnchor="193.0" />
     <Label text="XScreenSaver List" AnchorPane.bottomAnchor="227.0" AnchorPane.leftAnchor="14.0" />
     <Label prefWidth="382.0" text="Note: Double click an image to view the video or image." textFill="$x1" AnchorPane.bottomAnchor="219.0" AnchorPane.leftAnchor="369.0" AnchorPane.rightAnchor="199.0" />

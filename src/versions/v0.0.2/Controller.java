@@ -89,11 +89,11 @@ public class Controller {
         thumbImgView.getChildren().clear();  // Clears children if any to setup for new images
         dirPathField.setText("" + directory);
 
-        for (int i=0; i<size; i++) {
+			     for (int i=0; i<size; i++) {
             String path = "" + fileList[i];
-            imgView.setFitWidth(535);
- 	    imgView.setFitHeight(345);
- 	    imgView.setLayoutY(posY);
+        				imgView.setFitWidth(535);
+ 											imgView.setFitHeight(345);
+ 											imgView.setLayoutY(posY);
 
             // Video or image click actions
             if (fileList[i].getName().contains(".mp4") || fileList[i].getName().contains(".mpeg") ||
@@ -109,35 +109,37 @@ public class Controller {
                     } catch(Throwable imgIOErr) {
                             System.out.println(imgIOErr);
                     }
-       	            imgView =  new ImageView("file:///tmp/image.png");
-		    thumbImgView.getChildren().add(imgView);
+        												imgView =  new ImageView("file:///tmp/image.png");
+					 		        				thumbImgView.getChildren().add(imgView);
                     imgView.setOnMouseClicked(mouse -> {
-		        if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
-			    mouse.consume();
-			    try {
+												            if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
+												                mouse.consume();
+								                    try {
                                   pb = Runtime.getRuntime().exec(vExec);
-			    } catch(IOException vidIOErr) {
-			          throw new UncheckedIOException(vidIOErr);
-			    }
-			}
+								                    } catch(IOException vidIOErr) {
+								                            throw new UncheckedIOException(vidIOErr);
+								                    }
+												            }
                         filePathField.setText(path);
                     });
             } else if(fileList[i].getName().contains(".png") || fileList[i].getName().contains(".jpg")||
                       fileList[i].getName().contains(".gif") || fileList[i].getName().contains(".jpeg")) {
-              	          imgView =  new ImageView("file://" + fileList[i]);
-			  thumbImgView.getChildren().add(imgView);
-			  final ImageView imgViewPoped =  new ImageView("file://" + fileList[i]);
+              												imgView =  new ImageView("file://" + fileList[i]);
+					 		              				thumbImgView.getChildren().add(imgView);
+												              final ImageView imgViewPoped =  new ImageView("file://" + fileList[i]);
+
                           imgView.setOnMouseClicked(mouse -> {
-			      if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
-				  mouse.consume();
-				  displayImg(imgViewPoped, path);
-       			      }
+								                      if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
+								                          mouse.consume();
+								                          displayImg(imgViewPoped, path);
+       								               }
                            filePathField.setText(path);
                            });
             } else {
                    System.out.println("Not a video or image file.");
             }
-        posY = posY + 355.0;								}
+        posY = posY + 355.0;
+								}
     }
     // View Image enlarged Note, sets up a seperate stage and scene with auto enlargment
     public void displayImg(ImageView imgViewPoped, String path) {
