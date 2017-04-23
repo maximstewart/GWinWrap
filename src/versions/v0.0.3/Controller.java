@@ -14,6 +14,9 @@ import javafx.geometry.Insets;
 import java.io.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.application.Platform;
+
 
 public class Controller {
 	 		private DirectoryChooser folderChooser = new DirectoryChooser();  // Selects a dir
@@ -62,12 +65,12 @@ public class Controller {
             textAreaPth = dirPathField.getText();
             System.out.println(textAreaPth);
             newDir();
-        }
+      }
         else {}
     }
 
     @FXML void test(ActionEvent event) {
-        newDir2();
+        newDir();
     }
 
     // Scan selected dir
@@ -88,12 +91,19 @@ public class Controller {
         dirPathField.setText("" + directory);
 
 			     for (int i=0; i<fileList.length; i++) {
-        												imgView = new ImageView();
- 					              imgView.setFitWidth(300); // Need these here to get grid properly.
-						              imgView.setFitHeight(200);
-					 		        				tilePane.getChildren().add(imgView);
+        					imgView = new ImageView();
+ 					       imgView.setFitWidth(300); // Need these here to get grid properly.
+						       imgView.setFitHeight(200);
+					 		     tilePane.getChildren().add(imgView);
         }
-    newDir2();
+
+        Task getDir = new Task<Void>() {
+            @Override public Void call() {
+              newDir2();
+              return null;
+            }};
+
+        new Thread(getDir).start();
     }
     public void newDir2() {
 			     for (int i=0; i<fileList.length; i++) {
@@ -114,8 +124,11 @@ public class Controller {
 
                     ImageView view = (ImageView) (tilePane.getChildren().get(i));
                     pth = new Image("file:///tmp/image.png");
-
-                    view.setImage(pth);
+                    Platform.runLater(new Runnable() {
+                      @Override public void run() {
+                        view.setImage(pth);
+                      }
+                    });
                     view.setOnMouseClicked(mouse -> {
 											            if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
 											                mouse.consume();
@@ -133,7 +146,11 @@ public class Controller {
                           pth = new Image("file://" + fileList[i]);
                           ImageView view = (ImageView) (tilePane.getChildren().get(i));
 
-                          view.setImage(pth);
+                          Platform.runLater(new Runnable() {
+                            @Override public void run() {
+                              view.setImage(pth);
+                            }
+                          });
 												              final ImageView imgViewPoped =  new ImageView("file://" + fileList[i]);
 			                       // image click actions
                               view.setOnMouseClicked(mouse -> {
