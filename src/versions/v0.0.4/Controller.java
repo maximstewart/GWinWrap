@@ -1,4 +1,5 @@
-import javafx.stage.*;
+import javafx.stage.Stage;
+import javafx.stage.DirectoryChooser;
 import javafx.scene.Scene;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -11,11 +12,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.geometry.Insets;
-import java.io.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.application.Platform;
+
+import java.io.File;
+import java.io.UncheckedIOException;
+import java.io.IOException;
+import java.io.FileWriter;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 
 public class Controller {
@@ -26,9 +32,8 @@ public class Controller {
     private Image pth = new Image(".");                               // Path to image
     private ImageView imgView = new ImageView(pth);                   // Image view area
     private Process pb;                                               // Process runner
-    private String tmpPath, resolution, xScreenVal, output,
-                   startScrpt = System.getProperty("user.dir") + "/resources/bin/StartXWW.sh",  // Gets shell that starts stuff local
-                   textAreaPth = "";
+    private String tmpPath, resolution, xScreenVal, output, textAreaPth = "",
+                   startScrpt = System.getProperty("user.dir") + "/resources/bin/StartXWW.sh";  // Gets shell that starts stuff local
     private int applyType = 1;
     private Stage fileChooserStage;
     @FXML private ListView<?> selXScreenSvr;
@@ -36,11 +41,9 @@ public class Controller {
     @FXML private TilePane tilePane;
     @FXML private TextField dirPathField, filePathField;              // Text fields
     @FXML private CheckBox useXSvrn;                                  // Check boxes
-    @FXML private ChoiceBox<?> playbackResolution, setMonPosOffset, listSaveLoc; // Choice box fields
-    @FXML private Button applyBttn, closeBttn, fileBttn, clear, // Buttons
-                         killBttn, saveBttn;
+    @FXML private ChoiceBox<?> playbackResolution, setMonPosOffset, listSaveLoc;    // Choice box fields
+    @FXML private Button applyBttn, closeBttn, fileBttn, clear, killBttn, saveBttn; // Buttons
 
-    // This method is called by the FXMLLoader when initialization is complete
     @FXML void initialize() throws Exception {
         assert dirPathField != null : "fx:id=\"dirPathField\" was not injected: check your FXML file 'Window.fxml'.";
         assert clear != null : "fx:id=\"clear\" was not injected: check your FXML file 'Window.fxml'.";
@@ -53,22 +56,15 @@ public class Controller {
         assert setMonPosOffset != null : "fx:id=\"setMonPosOffset\" was not injected: check your FXML file 'Window.fxml'.";
         assert playbackResolution != null : "fx:id=\"playbackResolution\" was not injected: check your FXML file 'Window.fxml'.";
         assert useXSvrn != null : "fx:id=\"useXSvrn\" was not injected: check your FXML file 'Window.fxml'.";
-        // Initialize your logic here: all @FXML variables will have been injected
     }
 
-    // Handler for TextArea[fx:id="dirPathField"] onKeyReleased
     @FXML void setNewDir(MouseEvent event) { newDir(); }
     @FXML void onEnter(KeyEvent event) {
         if (event.getCode().equals(KeyCode.ENTER)) {
             textAreaPth = dirPathField.getText();
             System.out.println(textAreaPth);
             newDir();
-      }
-        else {}
-    }
-
-    @FXML void test(ActionEvent event) {
-        newDir();
+      } else {}
     }
 
     // Scan selected dir
@@ -82,7 +78,7 @@ public class Controller {
 
             if (directory != null) {
                 System.out.println("Directory: " + directory);
-             }
+            }
         }
 
         fileList = directory.listFiles();
@@ -91,10 +87,10 @@ public class Controller {
 			     for (int i=0; i<fileList.length; i++) {
             String path = "" + fileList[i];
             if (path.toLowerCase().matches("^.*?(mp4|mpeg|mpg|wmv|mkv|flv|webm|avi|png|jpg|jpeg|gif).*$")) {
-               					imgView = new ImageView();
- 					              imgView.setFitWidth(300); // Need these here to get grid properly.
-						              imgView.setFitHeight(200);
-					 		            tilePane.getChildren().add(imgView);
+               	imgView = new ImageView();
+ 					          imgView.setFitWidth(300); // Need these here to get grid properly.
+						          imgView.setFitHeight(200);
+					 		        tilePane.getChildren().add(imgView);
             }
         }
 
@@ -103,63 +99,58 @@ public class Controller {
               newDir2();
               return null;
             }};
-
         new Thread(getDir).start();
     }
     public void newDir2() {
 			     for (int i=0; i<fileList.length; i++) {
-            String path = "" + fileList[i];
-            if (path.toLowerCase().matches("^.*?(mp4|mpeg|mpg|wmv|mkv|flv|webm|avi).*$")) {
-                    String movieImg = "ffmpegthumbnailer -w -t='00:30:00' -c png -i " + fileList[i] +
-                                      " -s 300 -o /tmp/image.png",
-                           vExec = "mplayer " + fileList[i];
-                    try {
-                        pb = Runtime.getRuntime().exec(movieImg);
-                        pb.waitFor();
-                    } catch(Throwable imgIOErr) {
-                            System.out.println(imgIOErr);
-                    }
+            String path = "" + fileList[i], tmpP = "" + fileList[i];
+            if (tmpP.toLowerCase().matches("^.*?(mp4|mpeg|mpg|wmv|mkv|flv|webm|avi).*$")) {
+                String movieImg = "ffmpegthumbnailer -w -t='00:30:00' -c png -i " +
+                                         fileList[i] + " -s 300 -o /tmp/image.png",
+                       vExec = "mplayer " + fileList[i];
+                try {
+                    pb = Runtime.getRuntime().exec(movieImg);
+                    pb.waitFor();
+                } catch(Throwable imgIOErr) {
+                    System.out.println(imgIOErr);
+                }
 
-                    ImageView view = (ImageView) (tilePane.getChildren().get(i));
-                    pth = new Image("file:///tmp/image.png");
-                    Platform.runLater(new Runnable() {
-                      @Override public void run() {
-                        view.setImage(pth);
-                      }
-                    });
-                    view.setOnMouseClicked(mouse -> {
-											            if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
-											                mouse.consume();
-							                    try {
-                                 pb = Runtime.getRuntime().exec(vExec);
-							                    } catch(IOException vidIOErr) {
-							                            throw new UncheckedIOException(vidIOErr);
-							                    }
-											            }
-                       filePathField.setText(path);
-                    });
-            } else if(path.toLowerCase().matches("^.*?(png|jpg|jpeg|gif).*$")) {
-			                       String title = "" + fileList[i];
-                          pth = new Image("file://" + fileList[i]);
-                          ImageView view = (ImageView) (tilePane.getChildren().get(i));
+                ImageView view = (ImageView) (tilePane.getChildren().get(i));
+                pth = new Image("file:///tmp/image.png");
+                Platform.runLater(new Runnable() {
+                    @Override public void run() { view.setImage(pth); }
+                });
 
-                          Platform.runLater(new Runnable() {
-                            @Override public void run() {
-                              view.setImage(pth);
-                            }
-                          });
-												              final ImageView imgViewPoped =  new ImageView("file://" + fileList[i]);
-			                       // image click actions
-                              view.setOnMouseClicked(mouse -> {
-								                      if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
-								                          mouse.consume();
-    			                           displayImg(imgViewPoped, title);
-       								               }
-                          filePathField.setText(path);
-			                       });
-								    } else {
-                   System.out.println("Not a video or image file.");
-            }
+                view.setOnMouseClicked(mouse -> {
+											        if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
+											            mouse.consume();
+							                try {
+                           pb = Runtime.getRuntime().exec(vExec);
+							                } catch(IOException vidIOErr) {
+							                    throw new UncheckedIOException(vidIOErr);
+							                }
+											        }
+                   filePathField.setText(path);
+                });
+            } else if(tmpP.toLowerCase().matches("^.*?(png|jpg|jpeg|gif).*$")) {
+                ImageView view = (ImageView) (tilePane.getChildren().get(i));
+			             String title = "file://" + fileList[i];
+                pth = new Image(title);
+
+                Platform.runLater(new Runnable() {
+                    @Override public void run() { view.setImage(pth); }
+                });
+
+												    final ImageView imgViewPoped = new ImageView(title);
+			             // image click actions
+                view.setOnMouseClicked(mouse -> {
+								            if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
+								                mouse.consume();
+    			                 displayImg(imgViewPoped, title);
+       								     }
+                    filePathField.setText(path);
+			             });
+								    } else { System.out.println("Not a video or image file."); }
         }
     }
     // Open image in new window
@@ -199,9 +190,9 @@ public class Controller {
 
         // Saves to file with selected and needed settings
         if(filePathField.getText().toLowerCase().matches("^.*?(png|jpg|jpeg|gif).*$"))
-              sveFileLoc = new File(System.getProperty("user.home") + "/" + ".config/nitrogen/bg-saved.cfg");
+            sveFileLoc = new File(System.getProperty("user.home") + "/" + ".config/nitrogen/bg-saved.cfg");
         else
-              sveFileLoc = new File(System.getProperty("user.home") + "/" + listSaveLoc.getValue());
+            sveFileLoc = new File(System.getProperty("user.home") + "/" + listSaveLoc.getValue());
 
         fileWriter = new FileWriter(sveFileLoc);
         resolution = "" + playbackResolution.getValue() + "" + setMonPosOffset.getValue();
@@ -216,21 +207,21 @@ public class Controller {
             applyType = 1;
           // GIF
         } else if (filePathField.getText().toLowerCase().contains(".gif")) {
-                output = "xwinwrap -ov -g " + resolution + " -st -sp -b -nf -s -ni -- gifview -a -w WID " + filePathField.getText();
-                fileWriter.write(output);
-                applyType = 1;
-          // Standard images using nitrogen
+            output = "xwinwrap -ov -g " + resolution + " -st -sp -b -nf -s -ni -- gifview -a -w WID " + filePathField.getText();
+            fileWriter.write(output);
+            applyType = 1;
+        // Standard images using nitrogen
         } else if(filePathField.getText().toLowerCase().contains(".jpg") ||
-                filePathField.getText().toLowerCase().contains(".png")) {
-                output = "[xin_0] \n file=" + filePathField.getText() + "\nmode=0 \nbgcolor=#000000\n" +
-                         "[xin_1] \nfile=" + filePathField.getText() + "\nmode=0 \nbgcolor=#000000";
-                fileWriter.write(output);
-                applyType = 2;
-          //VIDEO
+            filePathField.getText().toLowerCase().contains(".png")) {
+            output = "[xin_0] \n file=" + filePathField.getText() + "\nmode=0 \nbgcolor=#000000\n" +
+                     "[xin_1] \nfile=" + filePathField.getText() + "\nmode=0 \nbgcolor=#000000";
+            fileWriter.write(output);
+            applyType = 2;
+        //VIDEO
         } else {
-                output = "xwinwrap -ov -g " + resolution + " -st -sp -b -nf -s -ni -- mplayer -wid WID -really-quiet -nosound -loop 0 " + filePathField.getText();
-                fileWriter.write(output);
-                applyType = 1;
+            output = "xwinwrap -ov -g " + resolution + " -st -sp -b -nf -s -ni -- mplayer -wid WID -really-quiet -ao null -loop 0 " + filePathField.getText();
+            fileWriter.write(output);
+            applyType = 1;
         }
     fileWriter.close();
     }
