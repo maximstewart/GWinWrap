@@ -1,3 +1,5 @@
+package com.itdominator.fxwinwrap;
+
 import javafx.stage.Stage;
 import javafx.stage.DirectoryChooser;
 import javafx.scene.Scene;
@@ -16,33 +18,41 @@ import javafx.concurrent.Task;
 import javafx.application.Platform;
 
 import java.io.File;
-import java.io.UncheckedIOException;
-import java.io.IOException;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
 
 public class Controller {
-    private DirectoryChooser folderChooser = new DirectoryChooser();  // Selects a dir
-    private FileWriter fileWriter;                                    // Writes to files
-    private File directory, sveFileLoc;                               // Path to file or dir
-    private File[] fileList;
-    private Image pth = new Image(".");                               // Path to image
-    private ImageView imgView = new ImageView(pth);                   // Image view area
-    private Process pb;                                               // Process runner
-    private String tmpPath, resolution, xScreenVal, output, textAreaPth = "",
-                   startScrpt = System.getProperty("user.dir") + "/resources/bin/StartXWW.sh";  // Gets shell that starts stuff local
-    private int applyType = 1;
-    private Stage fileChooserStage;
+    // Classes
+
+    // FXML Stuff
     @FXML private ListView<?> selXScreenSvr;
-    @FXML private Label dirLbl;                                       // Labels
+    @FXML private Label dirLbl;
     @FXML private TilePane tilePane;
-    @FXML private TextField dirPathField, filePathField;              // Text fields
-    @FXML private CheckBox useXSvrn;                                  // Check boxes
-    @FXML private ChoiceBox<?> playbackResolution, setMonPosOffset, listSaveLoc;    // Choice box fields
-    @FXML private Button applyBttn, closeBttn, fileBttn, clear, killBttn, saveBttn; // Buttons
+    @FXML private TextField dirPathField, filePathField;
+    @FXML private CheckBox useXSvrn;
+    @FXML private ChoiceBox<?> playbackResolution, setMonPosOffset, listSaveLoc;
+    @FXML private Button applyBttn, closeBttn, fileBttn, clear, killBttn, saveBttn;
+
+    // Generics
+    private DirectoryChooser folderChooser = new DirectoryChooser();
+    private FileWriter fileWriter;
+    private File tempShFile, directory, sveFileLoc;
+    private File[] fileList;
+    private Image pth;                                                // Path to image
+    private ImageView imgView = new ImageView(pth);
+    private Process pb;                                               // Process runner
+    private Stage fileChooserStage;
+    private String tmpPath, resolution, xScreenVal, output, textAreaPth = "";
+    private int applyType = 1;
 
     @FXML void initialize() throws Exception {
         assert dirPathField != null : "fx:id=\"dirPathField\" was not injected: check your FXML file 'Window.fxml'.";
@@ -56,13 +66,32 @@ public class Controller {
         assert setMonPosOffset != null : "fx:id=\"setMonPosOffset\" was not injected: check your FXML file 'Window.fxml'.";
         assert playbackResolution != null : "fx:id=\"playbackResolution\" was not injected: check your FXML file 'Window.fxml'.";
         assert useXSvrn != null : "fx:id=\"useXSvrn\" was not injected: check your FXML file 'Window.fxml'.";
+
+        try {
+            tempShFile = File.createTempFile("StartXWW", ".sh", new File("/tmp/"));
+            tempShFile.setExecutable(true, true);
+            tempShFile.deleteOnExit();
+
+            FileWriter fileWriter = new FileWriter(tempShFile);
+            InputStream in = getClass().getResourceAsStream("resources/bin/StartXWW.sh");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+            String line = "";
+
+            while((line = bufferedReader.readLine()) != null) {
+                fileWriter.write(line + "\n");
+            }
+
+            // Always close files.
+            fileWriter.close();
+            in.close();
+            bufferedReader.close();
+        } catch (Exception e) { }
     }
 
     @FXML void setNewDir(MouseEvent event) { newDir(); }
     @FXML void onEnter(KeyEvent event) {
         if (event.getCode().equals(KeyCode.ENTER)) {
             textAreaPth = dirPathField.getText();
-            System.out.println(textAreaPth);
             newDir();
         } else {}
     }
@@ -75,10 +104,6 @@ public class Controller {
             directory = new File(textAreaPth);
         else {
             directory = folderChooser.showDialog(stage);
-
-            if (directory != null) {
-                System.out.println("Directory: " + directory);
-            }
         }
 
         fileList = directory.listFiles();
@@ -111,9 +136,7 @@ public class Controller {
                 try {
                     pb = Runtime.getRuntime().exec(movieImg);
                     pb.waitFor();
-                } catch(Throwable imgIOErr) {
-                    System.out.println(imgIOErr);
-                }
+                } catch(Throwable imgIOErr) { System.out.println(imgIOErr); }
 
                 ImageView view = (ImageView) (tilePane.getChildren().get(i));
                 pth = new Image("file:///tmp/image.png");
@@ -123,7 +146,7 @@ public class Controller {
 
                 view.setOnMouseClicked(mouse -> {
 					if (mouse.getClickCount() == 2 && !mouse.isConsumed()) {
-											            mouse.consume();
+						mouse.consume();
 						try {
                             pb = Runtime.getRuntime().exec(vExec);
 						} catch(IOException vidIOErr) {
@@ -157,12 +180,12 @@ public class Controller {
     public void displayImg(ImageView imgViewPoped, String title) {
         Stage popOut = new Stage();
         Pane pane = new Pane();
+        Scene scene = new Scene(pane, 1280, 900);
         imgViewPoped.setLayoutX(0);
         imgViewPoped.setLayoutY(0);
         imgViewPoped.fitWidthProperty().bind(pane.widthProperty());
         imgViewPoped.fitHeightProperty().bind(pane.heightProperty());
         pane.getChildren().add(imgViewPoped);
-        Scene scene = new Scene(pane, 1280, 900);
         popOut.setTitle(title);
         popOut.setScene(scene);
         popOut.show();
@@ -229,7 +252,7 @@ public class Controller {
     @FXML void applySttngs(ActionEvent event) throws Exception {
         pb = Runtime.getRuntime().exec("killall xwinwrap &");
         if (applyType == 1) {
-            pb = Runtime.getRuntime().exec(startScrpt);
+            pb = Runtime.getRuntime().exec("bash -c '" + tempShFile.toString() + "'");
             pb.waitFor();
         } else if (applyType == 2) {
             pb = Runtime.getRuntime().exec("nitrogen --restore");
@@ -238,6 +261,7 @@ public class Controller {
             pb = Runtime.getRuntime().exec("nitrogen --restore");
             pb.waitFor();
     }
+
     // Clean selection to start new search.
     @FXML void clearBttnClick(ActionEvent event) {
         tilePane.getChildren().clear();
@@ -245,6 +269,7 @@ public class Controller {
         dirPathField.setText("");
         filePathField.setText("");
     }
+
     // Closes program
     @FXML void closeProg(ActionEvent event) { System.exit(0); }
 }

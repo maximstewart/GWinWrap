@@ -1,0 +1,16 @@
+#!/bin/bash
+#postrm (script executed after uninstalling the package)
+#set -e
+
+if [ -f /bin/fxwinwrap ]; then
+    rm /bin/fxwinwrap
+fi
+
+if [ -d /opt/FXWinWrap ]; then
+    rm -rf /opt/FXWinWrap
+fi
+
+if [ -x "`which xdg-desktop-menu 2>/dev/null`" ]; then
+    xdg-desktop-menu uninstall /usr/share/applications/FXWinWrap.desktop
+    xdg-desktop-menu forceupdate --mode user
+fi
