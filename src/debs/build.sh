@@ -20,10 +20,6 @@ function main() {
         sudo chmod 755 "${i}"
     done
 
-    for  in in `find . -name *.FXWinWrap.desktop.swp`; do
-        sudo rm -rf "${i}"
-    done;
-
     sudo chmod 755 fxwinwrap*/opt/FXWinWrap/resources/bin/*
 
     sudo chown -R root:root ./*/

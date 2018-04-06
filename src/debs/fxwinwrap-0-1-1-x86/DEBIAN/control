@@ -1,8 +1,0 @@
-Package: fxwinwrap
-Version: 0.1-1
-Section: base
-Priority: optional
-Architecture: i386
-Depends: openjdk-8-jre (>= 8u45-b14-1)
-Maintainer: Maxim Stewart maximstewart1@gmail.com
-Description: A GUI to handle setting XWinWrap options.
