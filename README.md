@@ -13,7 +13,8 @@ v5 introduced the proper Jar structure and reduced some script requirements.
 # TODO
 Nothing At This Time
 
-#Credit
-FXXWinWrap Java Jar by: Maxim Stewart  -- https://www.itdominator.com/ 
+# Credit
+FXXWinWrap Java Jar by: Maxim Stewart  -- https://www.itdominator.com/
+<br/>
 XWinWrap binary by: Shantanu Goel -- http://tech.shantanugoel.com
 
