@@ -130,7 +130,7 @@ public class Controller {
         for (int i=0; i<fileList.length; i++) {
             String path = "" + fileList[i], tmpP = "" + fileList[i];
             if (tmpP.toLowerCase().matches("^.*?(mp4|mpeg|mpg|wmv|mkv|flv|webm|avi).*$")) {
-                String movieImg = "ffmpegthumbnailer -w -t='00:30:00' -c png -i " +
+                String movieImg = "ffmpegthumbnailer -t 65% -c jpg -i " +
                                          fileList[i] + " -s 300 -o /tmp/image.png",
                        vExec = "mplayer -really-quiet -ao null -loop 0 " + fileList[i];
                 try {
