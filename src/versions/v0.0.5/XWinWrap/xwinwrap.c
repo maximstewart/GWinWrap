@@ -42,11 +42,26 @@
  *                 Currently supporting circlular and triangular windows
  */
 
+ /*
+  * Modified by: Maxim Stewart
+  * Tech Blog: https://www.itdominator.com/
+  *
+  * Changelog:
+  * 22-March-19: 1. Cleaned up code formatting.
+  *              2. Removed unused DEBUG_MSG reference.
+  *              3. Moved functions to a more reasonable order.
+  *              4. Compile dev library list 32 & 64 bit:
+  *  # 32
+  *  sudo apt install libxext-dev:i386 libxrender-dev:i386 libc6-dev-i386
+  *
+  *  # 64
+  *  sudo apt install libxext-dev libxrender-dev libc6-dev
+  */
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
-
 #include <X11/extensions/shape.h>
 #include <X11/extensions/Xrender.h>
 
@@ -61,44 +76,35 @@
 
 #define WIDTH  512
 #define HEIGHT 384
-
 #define OPAQUE 0xffffffff
-
 #define NAME "xwinwrap"
 #define VERSION "0.3"
-
 #define DESKTOP_WINDOW_NAME_MAX_SIZE 25
 #define DEFAULT_DESKTOP_WINDOW_NAME "Desktop"
-
 #define DEBUG_MSG(x) if(debug) { fprintf(stderr, x); }
 
-typedef enum
-{
+typedef enum {
     SHAPE_RECT = 0,
     SHAPE_CIRCLE,
     SHAPE_TRIG,
 } win_shape;
 
-static pid_t pid = 0;
-
+static pid_t pid        = 0;
 static char **childArgv = 0;
 static int  nChildArgv  = 0;
+int debug               = 0;
 char desktop_window_name[DESKTOP_WINDOW_NAME_MAX_SIZE];
-int debug = 0;
 
-    static int
-addArguments (char **argv,
-        int  n)
-{
+static int addArguments (char **argv, int n) {
     char **newArgv;
     int  i;
 
     newArgv = realloc (childArgv, sizeof (char *) * (nChildArgv + n));
     if (!newArgv)
-        return 0;
+    return 0;
 
     for (i = 0; i < n; i++)
-        newArgv[nChildArgv + i] = argv[i];
+    newArgv[nChildArgv + i] = argv[i];
 
     childArgv   = newArgv;
     nChildArgv += n;
@@ -106,29 +112,21 @@ addArguments (char **argv,
     return n;
 }
 
-    static void
-setWindowOpacity (Display      *dpy,
-        Window       win,
-        unsigned int opacity)
-{
+static void setWindowOpacity (Display *dpy, Window win, unsigned int opacity) {
     CARD32 o;
-
     o = opacity;
-
     XChangeProperty (dpy, win, XInternAtom (dpy, "_NET_WM_WINDOW_OPACITY", 0),
-            XA_CARDINAL, 32, PropModeReplace,
-            (unsigned char *) &o, 1);
+    XA_CARDINAL, 32, PropModeReplace,
+    (unsigned char *) &o, 1);
 }
 
-    static Visual *
-findArgbVisual (Display *dpy, int scr)
-{
-    XVisualInfo		*xvi;
-    XVisualInfo		template;
-    int			nvi;
-    int			i;
-    XRenderPictFormat	*format;
-    Visual		*visual;
+static Visual * findArgbVisual (Display *dpy, int scr) {
+    XVisualInfo	        *xvi;
+    XVisualInfo	        template;
+    int			        nvi;
+    int			        i;
+    XRenderPictFormat  *format;
+    Visual		       *visual;
 
     template.screen = scr;
     template.depth  = 32;
@@ -140,34 +138,60 @@ findArgbVisual (Display *dpy, int scr)
             VisualClassMask,
             &template,
             &nvi);
+
     if (!xvi)
         return 0;
 
     visual = 0;
-    for (i = 0; i < nvi; i++)
-    {
+    for (i = 0; i < nvi; i++) {
         format = XRenderFindVisualFormat (dpy, xvi[i].visual);
-        if (format->type == PictTypeDirect && format->direct.alphaMask)
-        {
+        if (format->type == PictTypeDirect && format->direct.alphaMask) {
             visual = xvi[i].visual;
             break;
         }
     }
 
     XFree (xvi);
-
     return visual;
 }
 
-    static void
-sigHandler (int sig)
-{
-    kill (pid, sig);
+static Window find_desktop_window(Display *display, int screen,
+                                  Window *root, Window *p_desktop) {
+    int i;
+    unsigned int n;
+    Window win = *root;
+    Window troot, parent, *children;
+    char *name;
+    int status;
+    int width  = DisplayWidth(display, screen);
+    int height = DisplayHeight(display, screen);
+    XWindowAttributes attrs;
+
+    XQueryTree(display, *root, &troot, &parent, &children, &n);
+    for (i = 0; i < (int) n; i++) {
+        status = XFetchName(display, children[i], &name);
+        status |= XGetWindowAttributes(display, children[i], &attrs);
+
+        if ((status != 0) && (NULL != name)) {
+            if( (attrs.map_state != 0) && (attrs.width == width) &&
+                (attrs.height == height) && (!strcmp(name, desktop_window_name)) ) {
+                win = children[i];
+                XFree(children);
+                XFree(name);
+                *p_desktop = win;
+                return win;
+            }
+
+            if(name)
+                XFree(name);
+        }
+    }
+
+    DEBUG_MSG("Desktop Window Not found\n");
+    return 0;
 }
 
-    static void
-usage (void)
-{
+static void usage (void) {
     fprintf(stderr, "%s v%s- Modified by Shantanu Goel. Visit http://tech.shantanugoel.com for updates, queries and feature requests\n", NAME, VERSION);
     fprintf (stderr, "\nUsage: %s [-g {w}x{h}+{x}+{y}] [-ni] [-argb] [-fs] [-s] [-st] [-sp] [-a] "
             "[-b] [-nf] [-o OPACITY] [-sh SHAPE] [-ov]-- COMMAND ARG1...\n", NAME);
@@ -189,80 +213,41 @@ usage (void)
             -debug  - Enable debug messages\n");
 }
 
-static Window find_desktop_window(Display *display, int screen, Window *root, Window *p_desktop)
-{
-    int i;
-    unsigned int n;
-    Window win = *root;
-    Window troot, parent, *children;
-    char *name;
-    int status;
-    int width  = DisplayWidth (display, screen);
-    int height = DisplayHeight (display, screen);
-    XWindowAttributes attrs;
+static void sigHandler (int sig) { kill(pid, sig); }
 
-    XQueryTree(display, *root, &troot, &parent, &children, &n);
-    for (i = 0; i < (int) n; i++) 
-    {
-        status = XFetchName(display, children[i], &name);
-        status |= XGetWindowAttributes(display, children[i], &attrs);
-        if ((status != 0) && (NULL != name))
-        {
-            if( (attrs.map_state != 0) && (attrs.width == width) &&
-                    (attrs.height == height) && (!strcmp(name, desktop_window_name)) )
-            {
-                //DEBUG_MSG("Found Window:%s\n", name);
-                win = children[i];
-                XFree(children);
-                XFree(name);
-                *p_desktop = win;
-                return win;
-            }
-            if(name)
-            {
-                XFree(name);
-            }
-        }
-    }
-    DEBUG_MSG("Desktop Window Not found\n");
-    return 0;
-}
-
-    int
-main (int argc, char **argv)
-{
+int main (int argc, char **argv) {
     Display	    *dpy;
     Window	    win;
     Window	    root;
-    Window      p_desktop = 0;
+    Window      p_desktop    = 0;
     int		    screen;
     XSizeHints	xsh;
     XWMHints	xwmh;
     char	    widArg[256];
-    char	    *widArgv[] = { widArg };
-    char	    *endArg = NULL;
+    char	    *widArgv[]   = { widArg };
+    char	    *endArg      = NULL;
     int		    i;
-    int		    status = 0;
-    unsigned int opacity = OPAQUE;
-    int		    x = 0;
-    int		    y = 0;
-    unsigned int width = WIDTH;
-    unsigned int height = HEIGHT;
-    int		    argb = 0;
-    int		    fullscreen = 0;
-    int		    noInput = 0;
-    int		    noFocus = 0;
+    int		    status       = 0;
+    unsigned int opacity     = OPAQUE;
+    int		      x          = 0;
+    int		      y          = 0;
+    unsigned int width       = WIDTH;
+    unsigned int height      = HEIGHT;
+    int		    argb         = 0;
+    int		    fullscreen   = 0;
+    int		    noInput      = 0;
+    int		    noFocus      = 0;
     Atom	    state[256];
-    int		    nState = 0;
-    int         override = 0;
-    win_shape   shape = SHAPE_RECT;
+    int		    nState       = 0;
+    int         override     = 0;
+    win_shape   shape        = SHAPE_RECT;
     Pixmap      mask;
     GC          mask_gc;
     XGCValues   xgcv;
 
+
     dpy = XOpenDisplay (NULL);
-    if (!dpy)
-    {
+    if (!dpy) {
         fprintf (stderr, "%s: Error: couldn't open display\n", argv[0]);
         return 1;
     }
@@ -271,120 +256,75 @@ main (int argc, char **argv)
     root   = RootWindow (dpy, screen);
     strcpy(desktop_window_name, DEFAULT_DESKTOP_WINDOW_NAME);
 
-    for (i = 1; i < argc; i++)
-    {
-        if (strcmp (argv[i], "-g") == 0)
-        {
+    for (i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-g") == 0) {
             if (++i < argc)
                 XParseGeometry (argv[i], &x, &y, &width, &height);
-        }
-        else if (strcmp (argv[i], "-ni") == 0)
-        {
+        } else if (strcmp(argv[i], "-ni") == 0) {
             noInput = 1;
-        }
-        else if (strcmp (argv[i], "-d") == 0)
-        {
+        } else if (strcmp(argv[i], "-d") == 0) {
             ++i;
             strcpy(desktop_window_name, argv[i]);
-        }
-        else if (strcmp (argv[i], "-argb") == 0)
-        {
+        } else if (strcmp(argv[i], "-argb") == 0) {
             argb = 1;
-        }
-        else if (strcmp (argv[i], "-fs") == 0)
-        {
+        } else if (strcmp(argv[i], "-fs") == 0) {
             state[nState++] = XInternAtom (dpy, "_NET_WM_STATE_FULLSCREEN", 0);
             fullscreen = 1;
-        }
-        else if (strcmp (argv[i], "-s") == 0)
-        {
+        } else if (strcmp(argv[i], "-s") == 0) {
             state[nState++] = XInternAtom (dpy, "_NET_WM_STATE_STICKY", 0);
-        }
-        else if (strcmp (argv[i], "-st") == 0)
-        {
+        } else if (strcmp(argv[i], "-st") == 0) {
             state[nState++] = XInternAtom (dpy, "_NET_WM_STATE_SKIP_TASKBAR", 0);
-        }
-        else if (strcmp (argv[i], "-sp") == 0)
-        {
+        } else if (strcmp(argv[i], "-sp") == 0) {
             state[nState++] = XInternAtom (dpy, "_NET_WM_STATE_SKIP_PAGER", 0);
-        }
-        else if (strcmp (argv[i], "-a") == 0)
-        {
+        } else if (strcmp(argv[i], "-a") == 0) {
             state[nState++] = XInternAtom (dpy, "_NET_WM_STATE_ABOVE", 0);
-        }
-        else if (strcmp (argv[i], "-b") == 0)
-        {
+        } else if (strcmp(argv[i], "-b") == 0) {
             state[nState++] = XInternAtom (dpy, "_NET_WM_STATE_BELOW", 0);
-        }
-        else if (strcmp (argv[i], "-nf") == 0)
-        {
+        } else if (strcmp(argv[i], "-nf") == 0) {
             noFocus = 1;
-        }
-        else if (strcmp (argv[i], "-o") == 0)
-        {
+        } else if (strcmp(argv[i], "-o") == 0) {
             if (++i < argc)
                 opacity = (unsigned int) (atof (argv[i]) * OPAQUE);
-        }
-        else if (strcmp (argv[i], "-sh") == 0)
-        {
-            if (++i < argc)
-            {
-                if(strcasecmp(argv[i], "circle") == 0)
-                {
+        } else if (strcmp(argv[i], "-sh") == 0) {
+            if (++i < argc) {
+                if(strcasecmp(argv[i], "circle") == 0) {
                     shape = SHAPE_CIRCLE;
-                }
-                else if(strcasecmp(argv[i], "triangle") == 0)
-                {
+                } else if(strcasecmp(argv[i], "triangle") == 0) {
                     shape = SHAPE_TRIG;
                 }
             }
-        }
-        else if (strcmp (argv[i], "-ov") == 0)
-        {
+        } else if (strcmp(argv[i], "-ov") == 0) {
             override = 1;
-        }
-        else if (strcmp (argv[i], "-debug") == 0)
-        {
+        } else if (strcmp(argv[i], "-debug") == 0) {
             debug = 1;
-        }
-        else if (strcmp (argv[i], "--") == 0)
-        {
+        } else if (strcmp(argv[i], "--") == 0) {
             break;
-        }
-        else
-        {
+        } else {
             usage ();
-
             return 1;
         }
     }
 
-    for (i = i + 1; i < argc; i++)
-    {
-        if (strcmp (argv[i], "WID") == 0)
+    for (i = i + 1; i < argc; i++) {
+        if (strcmp(argv[i], "WID") == 0)
             addArguments (widArgv, 1);
         else
             addArguments (&argv[i], 1);
     }
 
-    if (!nChildArgv)
-    {
+    if (!nChildArgv) {
         fprintf (stderr, "%s: Error: couldn't create command line\n", argv[0]);
         usage ();
-
         return 1;
     }
 
     addArguments (&endArg, 1);
 
-    if (fullscreen)
-    {
+    if (fullscreen) {
         xsh.flags  = PSize | PPosition;
         xsh.width  = DisplayWidth (dpy, screen);
         xsh.height = DisplayHeight (dpy, screen);
-    }
-    else
-    {
+    } else {
         xsh.flags  = PSize;
         xsh.width  = width;
         xsh.height = height;
@@ -393,14 +333,12 @@ main (int argc, char **argv)
     xwmh.flags = InputHint;
     xwmh.input = !noFocus;
 
-    if (argb)
-    {
+    if (argb) {
         XSetWindowAttributes attr;
-        Visual		     *visual;
+        Visual *visual;
 
         visual = findArgbVisual (dpy, screen);
-        if (!visual)
-        {
+        if (!visual) {
             fprintf (stderr, "%s: Error: couldn't find argb visual\n", argv[0]);
             return 1;
         }
@@ -409,26 +347,21 @@ main (int argc, char **argv)
         attr.border_pixel     = 0;
         attr.colormap	      = XCreateColormap (dpy, root, visual, AllocNone);
 
-        win = XCreateWindow (dpy, root, 0, 0, xsh.width, xsh.height, 0,
-                32, InputOutput, visual,
-                CWBackPixel | CWBorderPixel | CWColormap, &attr);
-    }
-    else
-    {
+        win = XCreateWindow (dpy, root, 0, 0, xsh.width, xsh.height, 0, 32,
+                             InputOutput, visual,
+                             CWBackPixel | CWBorderPixel | CWColormap, &attr);
+    } else {
         XSetWindowAttributes attr;
         attr.override_redirect = override;
 
-        if( override && find_desktop_window(dpy, screen, &root, &p_desktop) )
-        {
+        if( override && find_desktop_window(dpy, screen, &root, &p_desktop) ) {
             win = XCreateWindow (dpy, p_desktop, x, y, xsh.width, xsh.height, 0,
-                    CopyFromParent, InputOutput, CopyFromParent,
-                    CWOverrideRedirect, &attr);
-        }
-        else
-        {
+                                 CopyFromParent, InputOutput, CopyFromParent,
+                                 CWOverrideRedirect, &attr);
+        } else {
             win = XCreateWindow (dpy, root, x, y, xsh.width, xsh.height, 0,
-                    CopyFromParent, InputOutput, CopyFromParent,
-                    CWOverrideRedirect, &attr);
+                                 CopyFromParent, InputOutput, CopyFromParent,
+                                 CWOverrideRedirect, &attr);
         }
     }
 
@@ -437,13 +370,11 @@ main (int argc, char **argv)
     if (opacity != OPAQUE)
         setWindowOpacity (dpy, win, opacity);
 
-    if (noInput)
-    {
+    if (noInput) {
         Region region;
 
         region = XCreateRegion ();
-        if (region)
-        {
+        if (region) {
             XShapeCombineRegion (dpy, win, ShapeInput, 0, 0, region, ShapeSet);
             XDestroyRegion (region);
         }
@@ -451,16 +382,13 @@ main (int argc, char **argv)
 
     if (nState)
         XChangeProperty (dpy, win, XInternAtom (dpy, "_NET_WM_STATE", 0),
-                XA_ATOM, 32, PropModeReplace,
-                (unsigned char *) state, nState);
+                         XA_ATOM, 32, PropModeReplace, (unsigned char *) state, nState);
 
-    if (shape)
-    {
+    if (shape) {
         mask = XCreatePixmap(dpy, win, width, height, 1);
         mask_gc = XCreateGC(dpy, mask, 0, &xgcv);
 
-        switch(shape)
-        {
+        switch(shape) {
             //Nothing special to be done if it's a rectangle
             case SHAPE_CIRCLE:
                 /* fill mask */
@@ -483,12 +411,9 @@ main (int argc, char **argv)
                     XSetForeground(dpy, mask_gc, 1);
                     XFillPolygon(dpy, mask, mask_gc, points, 3, Complex, CoordModeOrigin);
                 }
-
                 break;
-
             default:
                 break;
-
         }
         /* combine */
         XShapeCombineMask(dpy, win, ShapeBounding, 0, 0, mask, ShapeSet);
@@ -497,14 +422,10 @@ main (int argc, char **argv)
     XMapWindow (dpy, win);
 
     if(p_desktop == 0)
-    {
         XLowerWindow(dpy, win);
-    }
 
     XSync (dpy, win);
-
     sprintf (widArg, "0x%x", (int) win);
-
     pid = fork ();
 
     switch (pid) {
@@ -523,20 +444,16 @@ main (int argc, char **argv)
     signal (SIGTERM, sigHandler);
     signal (SIGINT,  sigHandler);
 
-    for (;;)
-    {
-        if (waitpid (pid, &status, 0) != -1)
-        {
+    for (;;) {
+        if (waitpid (pid, &status, 0) != -1) {
             if (WIFEXITED (status))
                 fprintf (stderr, "%s died, exit status %d\n", childArgv[0],
-                        WEXITSTATUS (status));
-
+                         WEXITSTATUS (status));
             break;
         }
     }
 
     XDestroyWindow (dpy, win);
     XCloseDisplay (dpy);
-
     return 0;
 }
