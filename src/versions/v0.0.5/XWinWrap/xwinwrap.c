@@ -47,7 +47,7 @@
   * Tech Blog: https://www.itdominator.com/
   *
   * Changelog:
-  * 22-March-19: 1. Cleaned up code formatting.
+  * 3-March-19:  1. Cleaned up code formatting.
   *              2. Removed unused DEBUG_MSG reference.
   *              3. Moved functions to a more reasonable order.
   *              4. Compile dev library list 32 & 64 bit:
@@ -95,7 +95,7 @@ static int  nChildArgv  = 0;
 int debug               = 0;
 char desktop_window_name[DESKTOP_WINDOW_NAME_MAX_SIZE];
 
-static int addArguments (char **argv, int n) {
+static int addArguments(char **argv, int n) {
     char **newArgv;
     int  i;
 
@@ -112,7 +112,7 @@ static int addArguments (char **argv, int n) {
     return n;
 }
 
-static void setWindowOpacity (Display *dpy, Window win, unsigned int opacity) {
+static void setWindowOpacity(Display *dpy, Window win, unsigned int opacity) {
     CARD32 o;
     o = opacity;
     XChangeProperty (dpy, win, XInternAtom (dpy, "_NET_WM_WINDOW_OPACITY", 0),
@@ -120,13 +120,13 @@ static void setWindowOpacity (Display *dpy, Window win, unsigned int opacity) {
     (unsigned char *) &o, 1);
 }
 
-static Visual * findArgbVisual (Display *dpy, int scr) {
-    XVisualInfo	        *xvi;
-    XVisualInfo	        template;
-    int			        nvi;
-    int			        i;
-    XRenderPictFormat  *format;
-    Visual		       *visual;
+static Visual * findArgbVisual(Display *dpy, int scr) {
+    XVisualInfo         *xvi;
+    XVisualInfo         template;
+    int                 nvi;
+    int                 i;
+    XRenderPictFormat   *format;
+    Visual              *visual;
 
     template.screen = scr;
     template.depth  = 32;
@@ -220,14 +220,14 @@ int main (int argc, char **argv) {
     Window	    win;
     Window	    root;
     Window      p_desktop    = 0;
-    int		    screen;
-    XSizeHints	xsh;
-    XWMHints	xwmh;
-    char	    widArg[256];
-    char	    *widArgv[]   = { widArg };
-    char	    *endArg      = NULL;
-    int		    i;
-    int		    status       = 0;
+    int         screen;
+    XSizeHints  xsh;
+    XWMHints    xwmh;
+    char        widArg[256];
+    char        *widArgv[]   = { widArg };
+    char        *endArg      = NULL;
+    int         i;
+    int         status       = 0;
     unsigned int opacity     = OPAQUE;
     int		      x          = 0;
     int		      y          = 0;
@@ -237,8 +237,8 @@ int main (int argc, char **argv) {
     int		    fullscreen   = 0;
     int		    noInput      = 0;
     int		    noFocus      = 0;
-    Atom	    state[256];
-    int		    nState       = 0;
+    Atom        state[256];
+    int         nState       = 0;
     int         override     = 0;
     win_shape   shape        = SHAPE_RECT;
     Pixmap      mask;
