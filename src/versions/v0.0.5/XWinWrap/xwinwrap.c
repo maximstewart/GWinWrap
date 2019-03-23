@@ -216,36 +216,36 @@ static void usage (void) {
 static void sigHandler (int sig) { kill(pid, sig); }
 
 int main (int argc, char **argv) {
-    Display	    *dpy;
-    Window	    win;
-    Window	    root;
-    Window      p_desktop    = 0;
-    int         screen;
-    XSizeHints  xsh;
-    XWMHints    xwmh;
-    char        widArg[256];
-    char        *widArgv[]   = { widArg };
-    char        *endArg      = NULL;
-    int         i;
-    int         status       = 0;
-    unsigned int opacity     = OPAQUE;
-    int		      x          = 0;
-    int		      y          = 0;
-    unsigned int width       = WIDTH;
-    unsigned int height      = HEIGHT;
-    int		    argb         = 0;
-    int		    fullscreen   = 0;
-    int		    noInput      = 0;
-    int		    noFocus      = 0;
-    Atom        state[256];
-    int         nState       = 0;
-    int         override     = 0;
-    win_shape   shape        = SHAPE_RECT;
-    Pixmap      mask;
-    GC          mask_gc;
-    XGCValues   xgcv;
+    Display	     *dpy;
+    Window	      win;
+    Window	      root;
+    Window       p_desktop    = 0;
+    int          screen;
+    XSizeHints   xsh;
+    XWMHints     xwmh;
+    char         widArg[256];
+    char         *widArgv[]   = { widArg };
+    char         *endArg      = NULL;
+    int          i;
+    int          status       = 0;
+    unsigned int opacity      = OPAQUE;
+    int		        x            = 0;
+    int		        y            = 0;
+    unsigned int width        = WIDTH;
+    unsigned int height       = HEIGHT;
+    int		        argb         = 0;
+    int		        fullscreen   = 0;
+    int		        noInput      = 0;
+    int		        noFocus      = 0;
+    Atom         state[256];
+    int          nState       = 0;
+    int          override     = 0;
+    win_shape    shape        = SHAPE_RECT;
+    Pixmap       mask;
+    GC           mask_gc;
+    XGCValues    xgcv;
 
-
+ 
     dpy = XOpenDisplay (NULL);
     if (!dpy) {
         fprintf (stderr, "%s: Error: couldn't open display\n", argv[0]);
