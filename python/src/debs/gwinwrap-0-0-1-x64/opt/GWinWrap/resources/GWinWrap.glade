@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkFileFilter" id="Folders">
+    <mime-types>
+      <mime-type>inode/directory</mime-type>
+    </mime-types>
+  </object>
+  <object class="GtkListStore" id="XScreensaver List">
+    <columns>
+      <!-- column-name XScreensavers -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">electricsheep</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">atlantis</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">atunnel</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">blinkbox</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">blocktube</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">bouncingcow</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">boxfit</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">bsod</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">bubble3d</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">bumps</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">cage</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">carousel</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">cube21</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">cubenetic</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">cubicgrid</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">cwaves</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">dangerball</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">fiberlamp</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">fireworkx</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">flipflop</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">fliptext</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">flow</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">flurry</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">flyingtoasters</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">gflux</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">glcells</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">gleidescope</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">glknots</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">glmatrix</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">glschool</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">glslideshow</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">glsnake</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">hypertorus</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">hypnowheel</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">interaggregate</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">intermomentary</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">jigglypuff</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">jigsaw</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">julia</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">lament</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">lockward</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">metaballs</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">moebiusgears</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">molecule</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">morph3d</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">noof</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">phosphor</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">photopile</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">pinion</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">popsquares</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">ripples</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">skytentacles</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">slidescreen</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">stonerview</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">strange</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">substrate</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">tangram</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">whirlwindwarp</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">wormhole</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">xflame</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">xrayswarm</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">companioncube</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">fuzzyflakes</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">galaxy</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">glplanet</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">penetrate</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkWindow" id="Main">
+    <property name="width_request">950</property>
+    <property name="height_request">600</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">GWinWrap</property>
+    <property name="window_position">center</property>
+    <property name="default_width">950</property>
+    <property name="default_height">600</property>
+    <property name="icon">GWinWrap.png</property>
+    <property name="gravity">center</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">15</property>
+            <property name="margin_top">15</property>
+            <property name="margin_bottom">15</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_bottom">5</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Note: Double click an image to view the video or image.</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Clear</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="clearSelection" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFileChooserButton" id="selectedDirDialog">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="focus_on_click">False</property>
+                    <property name="tooltip_text" translatable="yes">Chose Dream Scene / Image Directory</property>
+                    <property name="action">select-folder</property>
+                    <property name="create_folders">False</property>
+                    <property name="filter">Folders</property>
+                    <property name="preview_widget_active">False</property>
+                    <property name="title" translatable="yes">Dream Scene / Image Dir</property>
+                    <signal name="file-set" handler="setNewDir" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">in</property>
+                <child>
+                  <object class="GtkViewport">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkGrid" id="imageGrid">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="row_spacing">10</property>
+                        <property name="column_spacing">10</property>
+                        <property name="row_homogeneous">True</property>
+                        <property name="column_homogeneous">True</property>
+                        <child>
+                          <object class="GtkLabel" id="gridLabel">
+                            <property name="width_request">640</property>
+                            <property name="height_request">525</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Choose Image/Video Directory...</property>
+                            <attributes>
+                              <attribute name="font-desc" value="Times New Roman, 28"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="width_request">300</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">15</property>
+            <property name="margin_top">15</property>
+            <property name="margin_bottom">15</property>
+            <property name="hexpand">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkCheckButton" id="useXScrnList">
+                    <property name="label" translatable="yes">Use XScreenSaver</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="halign">center</property>
+                    <property name="margin_bottom">5</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="toggleXscreenUsageField" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="shadow_type">in</property>
+                    <child>
+                      <object class="GtkTreeView" id="xScreenSvrList">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="model">XScreensaver List</property>
+                        <property name="headers_visible">False</property>
+                        <signal name="cursor-changed" handler="passXScreenVal" swapped="no"/>
+                        <child internal-child="selection">
+                          <object class="GtkTreeSelection"/>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="listColumn">
+                            <property name="title" translatable="yes">XScreensaves</property>
+                            <child>
+                              <object class="GtkCellRendererText"/>
+                              <attributes>
+                                <attribute name="text">0</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="vexpand">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_top">10</property>
+                            <property name="margin_bottom">10</property>
+                            <property name="label" translatable="yes">Playback Resolutions</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_top">10</property>
+                            <property name="margin_bottom">10</property>
+                            <property name="label" translatable="yes">Position Offset</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkComboBoxText" id="playbackResolution">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="active">3</property>
+                            <items>
+                              <item translatable="yes">7680x4320</item>
+                              <item translatable="yes">3840x2160</item>
+                              <item translatable="yes">2048x1080</item>
+                              <item translatable="yes">1920x1080</item>
+                              <item translatable="yes">1440x720</item>
+                              <item translatable="yes">1600x900</item>
+                              <item translatable="yes">1280x720</item>
+                              <item translatable="yes">800x600</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="posOffset">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="active">18</property>
+                            <items>
+                              <item translatable="yes">Left</item>
+                              <item translatable="yes">-7680+0</item>
+                              <item translatable="yes">-3840+0</item>
+                              <item translatable="yes">-2048+0</item>
+                              <item translatable="yes">-1920+0</item>
+                              <item translatable="yes">-1440+0</item>
+                              <item translatable="yes">-1600+0</item>
+                              <item translatable="yes">-1280+0</item>
+                              <item translatable="yes">-800+0</item>
+                              <item translatable="yes">Right</item>
+                              <item translatable="yes">+7680+0</item>
+                              <item translatable="yes">+3840+0</item>
+                              <item translatable="yes">+2048+0</item>
+                              <item translatable="yes">+1920+0</item>
+                              <item translatable="yes">+1440+0</item>
+                              <item translatable="yes">+1600+0</item>
+                              <item translatable="yes">+1280+0</item>
+                              <item translatable="yes">+800+0</item>
+                              <item translatable="yes">+0+0</item>
+                              <item translatable="yes">Top</item>
+                              <item translatable="yes">+0+7680</item>
+                              <item translatable="yes">+0+3840</item>
+                              <item translatable="yes">+0+2048</item>
+                              <item translatable="yes">+0+1920</item>
+                              <item translatable="yes">+0+1440</item>
+                              <item translatable="yes">+0+1600</item>
+                              <item translatable="yes">0+1280</item>
+                              <item translatable="yes">+0+800</item>
+                              <item translatable="yes">Bottum</item>
+                              <item translatable="yes">+0-7680</item>
+                              <item translatable="yes">+0-3840</item>
+                              <item translatable="yes">+0-2048</item>
+                              <item translatable="yes">+0-1920</item>
+                              <item translatable="yes">+0-1440</item>
+                              <item translatable="yes">+0-1600</item>
+                              <item translatable="yes">0-1280</item>
+                              <item translatable="yes">+0-800</item>
+                            </items>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_top">10</property>
+                        <property name="margin_bottom">5</property>
+                        <property name="label" translatable="yes">Save Path</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBoxText" id="saveLoc">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="active">0</property>
+                        <items>
+                          <item translatable="yes">.animatedBGstarter.sh</item>
+                          <item translatable="yes">.animatedBGstarter2.sh</item>
+                        </items>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkGrid">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label" translatable="yes">Save Selection</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <signal name="clicked" handler="saveToFile" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label" translatable="yes">Apply</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <signal name="clicked" handler="applySttngs" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label" translatable="yes">Kill XWinWrap</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <signal name="clicked" handler="killXWinWrp" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label" translatable="yes">Close</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <signal name="clicked" handler="closeProgram" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="pack_type">end</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">1</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

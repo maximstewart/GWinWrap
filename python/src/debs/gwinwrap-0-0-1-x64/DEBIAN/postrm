@@ -1,0 +1,20 @@
+#!/bin/bash
+#postrm (script executed after uninstalling the package)
+#set -e
+
+if [ -f /bin/xwinwrap ]; then
+    rm /bin/xwinwrap
+fi
+
+if [ -f /bin/gwinwrap ]; then
+    rm /bin/gwinwrap
+fi
+
+if [ -d /opt/GWinWrap ]; then
+    rm -rf /opt/GWinWrap
+fi
+
+if [ -x "`which xdg-desktop-menu 2>/dev/null`" ]; then
+    xdg-desktop-menu uninstall /usr/share/applications/GWinWrap.desktop
+    xdg-desktop-menu forceupdate --mode user
+fi
