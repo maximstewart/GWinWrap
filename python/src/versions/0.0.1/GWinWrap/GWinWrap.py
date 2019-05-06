@@ -107,9 +107,13 @@ class GWinWrap:
                 self.generateThumbnail(fullPathFile)
                 thumbnl = self.createGtkImage("/tmp/image.png", [310, 310])
                 eveBox.connect("button_press_event", self.runMplayerProcess, (fullPathFile, file,))
+                eveBox.connect("enter_notify_event", self.mouseOver, (fullPathFile, file))
+                eveBox.connect("leave_notify_event", self.mouseOut, (fullPathFile, file))
             elif file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
                 thumbnl = self.createGtkImage(fullPathFile, [310, 310])
                 eveBox.connect("button_press_event", self.runImageViewerProcess, (fullPathFile, file))
+                eveBox.connect("enter_notify_event", self.mouseOver, (fullPathFile, file))
+                eveBox.connect("leave_notify_event", self.mouseOut, (fullPathFile, file))
             else:
                 print("Not a video or image file.")
                 return
@@ -159,11 +163,32 @@ class GWinWrap:
 
     def runImageViewerProcess(self, widget, eve, params):
         if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
-            subprocess.call(["xdg-open", params[0]])
+            previewWindow = self.builder.get_object("previewWindow")
+            previewImg    = self.builder.get_object("previewImg")
+            previewImg.set_from_file(params[0])
+            previewWindow.show_all()
+            previewWindow.popup()
 
         self.toSavePath = params[0]
         self.applyType  = 2
         self.helpLabel.set_markup("<span foreground=\"#e0cc64\">" + params[1] + "</span>")
+
+    def openMainImageViewer(self, widget):
+        subprocess.call(["xdg-open", self.toSavePath])
+
+    def closePopup(self, widget):
+        previewWindow = self.builder.get_object("previewWindow")
+        previewWindow.popdown()
+
+    def mouseOver(self, widget, eve, args):
+        pass
+        # hand_cursor = gdk.Cursor(gdk.CursorType.GDK_HAND2)
+        # self.window.get_window().set_cursor(hand_cursor)
+
+    def mouseOut(self, widget, eve, args):
+        pass
+        # watch_cursor = gdk.Cursor(gdk.CursorType.GDK_LEFT_PTR)
+        # self.window.get_window().set_cursor(watch_cursor)
 
     def toggleXscreenUsageField(self, widget, data=None):
         useXscreenSaver = self.builder.get_object("useXScrnList")
