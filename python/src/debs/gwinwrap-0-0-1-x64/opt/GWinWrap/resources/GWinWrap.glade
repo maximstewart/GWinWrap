@@ -625,7 +625,7 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkButton">
-                        <property name="label" translatable="yes">Save Selection</property>
+                        <property name="label" translatable="yes">Save</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -634,13 +634,13 @@
                         <signal name="clicked" handler="saveToFile" swapped="no"/>
                       </object>
                       <packing>
-                        <property name="left_attach">0</property>
+                        <property name="left_attach">1</property>
                         <property name="top_attach">0</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkButton">
-                        <property name="label" translatable="yes">Apply</property>
+                        <property name="label" translatable="yes">Start</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -649,13 +649,13 @@
                         <signal name="clicked" handler="applySttngs" swapped="no"/>
                       </object>
                       <packing>
-                        <property name="left_attach">1</property>
+                        <property name="left_attach">0</property>
                         <property name="top_attach">0</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkButton">
-                        <property name="label" translatable="yes">Kill XWinWrap</property>
+                        <property name="label" translatable="yes">Stop</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
