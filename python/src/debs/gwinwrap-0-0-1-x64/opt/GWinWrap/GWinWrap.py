@@ -46,9 +46,22 @@ class GWinWrap:
         self.gridLabel = self.builder.get_object("gridLabel")
 
         self.stateSaver = SaveState()
+        self.focusedImg = gtk.Image()
+        self.usrHome    = os.path.expanduser('~')
         self.xScreenVal = None
         self.toSavePath = None # Global file path and type for saving to file
-        self.applyType  = 1 # 1 is XWinWrap and 2 is Nitrogen
+        self.applyType  = 1    # 1 is XWinWrap and 2 is Nitrogen
+
+        self.loadProgress = self.builder.get_object("loadProgress")
+        self.helpLabel    = self.builder.get_object("helpLabel")
+        self.defaultLabel = "<span>Note: Double click an image to view the video or image.</span>"
+        self.savedLabel   = "<span foreground=\"#88cc27\">Saved settings...</span>"
+        self.appliedLabel = "<span foreground=\"#88cc27\">Running xwinwrap...</span>"
+        self.stoppedLabel = "<span foreground=\"#88cc27\">Stopped xwinwrap...</span>"
+        # foreground=\"#ffa800\"
+        # foreground=\"#88cc27\"
+        # foreground=\"#ff0000\"
+        # foreground=\"#ff0000\"
 
         self.window.show()
 
@@ -66,72 +79,91 @@ class GWinWrap:
         Thread(target=self.newDir, args=(dir,)).start()
 
     def newDir(self, dir):
-        self.clear()
-        imageGrid  = self.builder.get_object("imageGrid")
-        path       = dir
-        files      = []
-        list       = [f for f in listdir(path) if isfile(join(path, f))]
-        row        = 0
-        col        = 0
+        imageGrid    = self.builder.get_object("imageGrid")
+        dirPath      = dir
+        list         = [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
+        files        = []
+        row          = 0
+        col          = 0
 
         for file in list:
             if file.lower().endswith(('.mkv', '.avi', '.flv', '.mov', '.m4v', '.mpg', '.wmv', '.mpeg', '.mp4', '.webm', '.png', '.jpg', '.jpeg', '.gif')):
                 files.append(file)
 
+
+        fractionTick = 1.0 / len(files)
+        tickCount    = 0.0
+        self.clear()
         imageGrid.remove_column(0)
+        self.loadProgress.set_text("Loading...")
+        self.loadProgress.set_fraction(0.0)
+        self.helpLabel.set_markup("<span foreground=\"#b30ec2\">" + dirPath.strip(self.usrHome) + "</span>")
         for file in files:
-            fullPathFile = path + "/" + file
+            fullPathFile = dirPath + "/" + file
             eveBox       = gtk.EventBox()
             thumbnl      = gtk.Image()
 
             if file.lower().endswith(('.mkv', '.avi', '.flv', '.mov', '.m4v', '.mpg', '.wmv', '.mpeg', '.mp4', '.webm')):
-                subprocess.call(["ffmpegthumbnailer", "-t", "65%", "-s", "300", "-c", "jpg", "-i", fullPathFile, "-o", "/tmp/image.png"])
-                thumbnl = self.createImage("/tmp/image.png")
-                eveBox.connect("button_press_event", self.runMplayerProcess, fullPathFile)
+                self.generateThumbnail(fullPathFile)
+                thumbnl = self.createGtkImage("/tmp/image.png", [310, 310])
+                eveBox.connect("button_press_event", self.runMplayerProcess, (fullPathFile, file,))
             elif file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
-                thumbnl = self.createImage(fullPathFile)
-                eveBox.connect("button_press_event", self.runImageViewerProcess, fullPathFile)
+                thumbnl = self.createGtkImage(fullPathFile, [310, 310])
+                eveBox.connect("button_press_event", self.runImageViewerProcess, (fullPathFile, file))
             else:
                 print("Not a video or image file.")
                 return
 
             gobject.idle_add(self.preGridSetup, (eveBox, thumbnl, ))
             gobject.idle_add(self.addToGrid, (imageGrid, eveBox, col, row,))
+            tickCount = tickCount + fractionTick
+            self.loadProgress.set_fraction(tickCount)
 
             col += 1
             if col == 2:
                 col = 0
                 row += 1
 
+        self.loadProgress.set_text("Finished...")
+
     def preGridSetup(self, args):
         args[0].show()
         args[1].show()
         args[0].add(args[1])
 
-    def createImage(self, arg):
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                    filename  = arg,
-                    width     = 310,
-                    height    = 310,
-                    preserve_aspect_ratio = True)
-        return gtk.Image.new_from_pixbuf(pixbuf)
-
     def addToGrid(self, args):
         args[0].attach(args[1], args[2], args[3], 1, 1)
 
-    def runMplayerProcess(self, widget, eve, fullPathFile):
+    def generateThumbnail(self, fullPathFile):
+        subprocess.call(["ffmpegthumbnailer", "-t", "65%", "-s", "300", "-c", "jpg", "-i", fullPathFile, "-o", "/tmp/image.png"])
+
+    def createGtkImage(self, path, wxh):
+        try:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                filename  = path,
+                width     = wxh[0],
+                height    = wxh[1],
+                preserve_aspect_ratio = True)
+            return gtk.Image.new_from_pixbuf(pixbuf)
+        except Exception as e:
+            print(e)
+        return gtk.Image()
+
+    def runMplayerProcess(self, widget, eve, params):
         if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
-            subprocess.call(["mplayer", "-really-quiet", "-ao", "null", "-loop", "0", fullPathFile])
+            subprocess.call(["mplayer", "-really-quiet", "-ao", "null", "-loop", "0", params[0]])
 
-        self.toSavePath = fullPathFile
-        self.applyType  = 1  # Set to XWinWrap
+        self.toSavePath = params[0]
+        self.applyType  = 1
+        self.helpLabel.set_markup("<span foreground=\"#e0cc64\">" + params[1] + "</span>")
 
-    def runImageViewerProcess(self, widget, eve, fullPathFile):
+    def runImageViewerProcess(self, widget, eve, params):
         if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
-            subprocess.call(["xdg-open",  fullPathFile])
+            subprocess.call(["xdg-open", params[0]])
 
-        self.toSavePath = fullPathFile
-        self.applyType  = 2  # Set to Nitrogen
+        self.toSavePath = params[0]
+        self.applyType  = 2
+        self.helpLabel.set_markup("<span foreground=\"#e0cc64\">" + params[1] + "</span>")
 
     def toggleXscreenUsageField(self, widget, data=None):
         useXscreenSaver = self.builder.get_object("useXScrnList")
@@ -148,6 +180,7 @@ class GWinWrap:
         resolution      = plyBckRes.get_active_text() + offset4Res.get_active_text()
         self.applyType  = self.stateSaver.saveToFile(self.toSavePath, resolution,
                             saveLoc, useXscreenSaver, self.xScreenVal)
+        self.helpLabel.set_markup(self.savedLabel)
 
     def applySttngs(self, widget, data=None):
         os.system("killall xwinwrap &")
@@ -158,10 +191,11 @@ class GWinWrap:
             os.system("nitrogen --restore &")
         else:
             os.system("nitrogen --restore &")
-
+        self.helpLabel.set_markup(self.appliedLabel)
 
     def killXWinWrp(self, widget, data=None):
         os.system("killall xwinwrap &")
+        self.helpLabel.set_markup(self.stoppedLabel)
 
     def passXScreenVal(self, widget):
         xSvrListStore   = self.builder.get_object("XScreensaver List")
@@ -183,6 +217,9 @@ class GWinWrap:
                 break
 
         imageGrid.attach(self.gridLabel, 0, 0, 1, 1)
+        self.helpLabel.set_markup(self.defaultLabel)
+        self.loadProgress.set_text("")
+        self.loadProgress.set_fraction(0.0)
         self.toSavePath = None
         self.applyType  = 1  # Default to XWinWrap
 

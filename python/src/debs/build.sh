@@ -10,7 +10,7 @@ function main() {
         sudo chmod 755 "${i}"
     done
 
-    # Set fxwinwrap permissions
+    # Set gwinwrap permissions
     for i in `find . -name gwinwrap`; do
         sudo chmod 755 "${i}"
     done
@@ -19,8 +19,6 @@ function main() {
     for i in `find . -name xwinwrap`; do
         sudo chmod 755 "${i}"
     done
-
-    sudo chmod 755 gwinwrap*/opt/GWinWrap/resources/bin/*
 
     sudo chown -R root:root ./*/
 builder;

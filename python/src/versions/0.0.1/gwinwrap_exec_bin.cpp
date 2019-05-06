@@ -5,6 +5,6 @@ using namespace std;
 
 int main() {
     chdir("/opt/GWinWrap/");
-    system("python GWinWrap.py");
+    system("python3 GWinWrap.py");
 return 0;
 }
