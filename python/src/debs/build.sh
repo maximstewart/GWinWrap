@@ -21,7 +21,9 @@ function main() {
     done
 
     sudo chown -R root:root ./*/
-builder;
+
+    builder;
+    bash ./chownAll.sh
 }
 
 #builds debs
