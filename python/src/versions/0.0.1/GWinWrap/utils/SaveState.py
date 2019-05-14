@@ -5,29 +5,32 @@ import os
 class SaveState:
     def __init__(self):
         self.fileWriter  = None
-        self.filePath    = None
+        self.toSavePath    = None
         self.useXSvrn    = None
         self.xScreenVal  = None
         self.sveFileLoc  = None
         self.resolution  = None
 
-    def saveToFile(self, filePath, resolution,
-        saveLoc, useXSvrn, xScreenVal):
+    def saveToFile(self, toSavePath, resolution,
+                    saveLoc, useXSvrn, xScreenVal):
 
-        self.filePath   = filePath
+        self.toSavePath = toSavePath
         self.useXSvrn   = useXSvrn
         self.xScreenVal = xScreenVal
         self.resolution = resolution
         userPth         = os.path.expanduser('~')
 
         # Saves to file with selected and needed settings
-        if filePath:
-            if filePath.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+        if toSavePath:
+            if toSavePath.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
                 self.sveFileLoc = userPth + "/" + ".config/nitrogen/bg-saved.cfg"
             else:
                 self.sveFileLoc = userPth + "/" + saveLoc
+        elif useXSvrn and xScreenVal:
+            self.sveFileLoc = userPth + "/" + saveLoc
         else:
-            self.filePath   = ''
+            return -1
+
         if self.sveFileLoc:
             self.fileWriter = open(self.sveFileLoc, "w")
 
@@ -37,19 +40,22 @@ class SaveState:
         applyType = 1
         output    = None
 
+        print("XScreen: " + str(self.useXSvrn))
+        print(self.fileWriter)
+
         # XSCREENSAVER
         if self.useXSvrn:
             output = "xwinwrap -ov -g " + self.resolution + " -st -sp -b -nf -s -ni -- /usr/lib/xscreensaver/" + self.xScreenVal + " -window-id WID -root";
         # GIF
-        elif self.filePath.lower().endswith(('.gif')):
-            output = "xwinwrap -ov -g " + self.resolution + " -st -sp -b -nf -s -ni -- gifview -a -w WID " + self.filePath;
+        elif self.toSavePath.lower().endswith(('.gif')):
+            output = "xwinwrap -ov -g " + self.resolution + " -st -sp -b -nf -s -ni -- gifview -a -w WID " + self.toSavePath;
         # Standard images using nitrogen
-        elif self.filePath.lower().endswith(('.png', 'jpg', '.jpeg')):
-            output = "[xin_0] \n file=" + self.filePath + "\nmode=0 \nbgcolor=#000000\n[xin_1] \nfile=" + self.filePath + "\nmode=0 \nbgcolor=#000000";
+        elif self.toSavePath.lower().endswith(('.png', 'jpg', '.jpeg')):
+            output = "[xin_0] \n file=" + self.toSavePath + "\nmode=0 \nbgcolor=#000000\n[xin_1] \nfile=" + self.toSavePath + "\nmode=0 \nbgcolor=#000000";
             applyType = 2;
         # VIDEO
         else:
-            output = "xwinwrap -ov -g " + self.resolution + " -st -sp -b -nf -s -ni -- mplayer -wid WID -really-quiet -ao null -loop 0 " + self.filePath;
+            output = "xwinwrap -ov -g " + self.resolution + " -st -sp -b -nf -s -ni -- mplayer -wid WID -really-quiet -ao null -loop 0 " + self.toSavePath;
             pass
 
         if self.fileWriter:

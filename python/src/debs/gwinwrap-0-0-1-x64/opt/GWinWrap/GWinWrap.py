@@ -8,7 +8,7 @@ gi.require_version('Gdk', '3.0')
 from gi.repository import Gtk as gtk
 from gi.repository import Gdk as gdk
 from gi.repository import GObject as gobject
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import GdkPixbuf
 
 from os import listdir
 from os.path import isfile, join
@@ -28,9 +28,8 @@ class GWinWrap:
         self.window    = self.builder.get_object("Main")
         self.builder.connect_signals(self)
         self.window.connect("delete-event", gtk.main_quit)
-
-        self.screen = self.window.get_screen()
-        self.visual = self.screen.get_rgba_visual()
+        self.screen    = self.window.get_screen()
+        self.visual    = self.screen.get_rgba_visual()
         if self.visual != None and self.screen.is_composited():
             self.window.set_visual(self.visual)
 
@@ -61,7 +60,15 @@ class GWinWrap:
         # foreground=\"#ffa800\"
         # foreground=\"#88cc27\"
         # foreground=\"#ff0000\"
-        # foreground=\"#ff0000\"
+
+        # Fill list xscreensaver
+        self.xscrPth      = "/usr/lib/xscreensaver/"
+        xscreenList       = self.builder.get_object("XScreensaver List")
+        list              = [f for f in listdir(self.xscrPth) if isfile(join(self.xscrPth, f))]
+        list.sort()
+
+        for file in list:
+            xscreenList.append((file,))
 
         self.window.show()
 
@@ -205,6 +212,10 @@ class GWinWrap:
         resolution      = plyBckRes.get_active_text() + offset4Res.get_active_text()
         self.applyType  = self.stateSaver.saveToFile(self.toSavePath, resolution,
                             saveLoc, useXscreenSaver, self.xScreenVal)
+        if self.applyType == -1:
+            self.helpLabel.set_markup("<span foreground=\"#e0cc64\">Nothing saved...</span>")
+            return
+
         self.helpLabel.set_markup(self.savedLabel)
 
     def applySttngs(self, widget, data=None):
@@ -229,6 +240,11 @@ class GWinWrap:
         treeiter        = xSvrListStore.get_iter(path[0])
         self.xScreenVal = xSvrListStore.get_value(treeiter, 0)
 
+    def previewXscreen(self, widget, eve):
+        if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
+            preview = self.xscrPth + "/" + self.xScreenVal + "&"
+            os.system(preview)
+
     def clearSelection(self, widget, data=None):
         self.clear()
 
@@ -242,10 +258,13 @@ class GWinWrap:
                 break
 
         imageGrid.attach(self.gridLabel, 0, 0, 1, 1)
+        self.builder.get_object("xScreenSvrList").set_sensitive(False)
+        self.builder.get_object("useXScrnList").set_active(False)
         self.helpLabel.set_markup(self.defaultLabel)
         self.loadProgress.set_text("")
         self.loadProgress.set_fraction(0.0)
         self.toSavePath = None
+        self.xScreenVal = None
         self.applyType  = 1  # Default to XWinWrap
 
     def closeProgram(self, widget, data=None):
