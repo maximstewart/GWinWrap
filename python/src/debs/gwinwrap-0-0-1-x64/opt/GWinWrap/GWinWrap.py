@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 
-import os, cairo, sys, gi, re, threading, subprocess
+import os, cairo, sys, gi, re, threading, subprocess, hashlib
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 
-from gi.repository import Gtk as gtk
-from gi.repository import Gdk as gdk
-from gi.repository import GObject as gobject
-from gi.repository import GdkPixbuf
+from gi.repository import Gtk as gtk, Gdk as gdk, GObject as gobject, GdkPixbuf
 
 from os import listdir
 from os.path import isfile, join
 from threading import Thread
 
-from utils import SaveState
+from utils import SaveStateToXWinWarp, SaveGWinWrapSettings
 
 gdk.threads_init()
 
@@ -36,6 +33,13 @@ class GWinWrap:
         self.window.set_app_paintable(True)
         self.window.connect("draw", self.area_draw)
 
+        # bind css file
+        cssProvider = gtk.CssProvider()
+        cssProvider.load_from_path('resources/stylesheet.css')
+        screen = gdk.Screen.get_default()
+        styleContext = gtk.StyleContext()
+        styleContext.add_provider_for_screen(screen, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_USER)
+
         # Add filter to allow only folders to be selected
         dialog         = self.builder.get_object("selectedDirDialog")
         filefilter     = self.builder.get_object("Folders")
@@ -44,7 +48,9 @@ class GWinWrap:
         # Get reference to remove and add it back...
         self.gridLabel = self.builder.get_object("gridLabel")
 
-        self.stateSaver = SaveState()
+        self.stateSaver = SaveStateToXWinWarp()
+        self.sttngsSver = SaveGWinWrapSettings()
+
         self.focusedImg = gtk.Image()
         self.usrHome    = os.path.expanduser('~')
         self.xScreenVal = None
@@ -70,6 +76,11 @@ class GWinWrap:
         for file in list:
             xscreenList.append((file,))
 
+        self.selectedImg  = None  # EventBox holder
+        self.player       = None
+        self.imgVwr       = None
+        self.retrieveSettings()
+
         self.window.show()
 
     def area_draw(self, widget, cr):
@@ -86,19 +97,18 @@ class GWinWrap:
         Thread(target=self.newDir, args=(dir,)).start()
 
     def newDir(self, dir):
-        imageGrid    = self.builder.get_object("imageGrid")
-        dirPath      = dir
-        list         = [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
-        files        = []
-        row          = 0
-        col          = 0
+        imageGrid  = self.builder.get_object("imageGrid")
+        dirPath    = dir
+        list       = [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
+        files      = []
+        row        = 0
+        col        = 0
 
         for file in list:
             if file.lower().endswith(('.mkv', '.avi', '.flv', '.mov', '.m4v', '.mpg', '.wmv', '.mpeg', '.mp4', '.webm', '.png', '.jpg', '.jpeg', '.gif')):
                 files.append(file)
 
-
-        fractionTick = 1.0 / len(files)
+        fractionTick = 1.0 / 1.0 if len(files) == 0 else len(files)
         tickCount    = 0.0
         self.clear()
         imageGrid.remove_column(0)
@@ -111,16 +121,20 @@ class GWinWrap:
             thumbnl      = gtk.Image()
 
             if file.lower().endswith(('.mkv', '.avi', '.flv', '.mov', '.m4v', '.mpg', '.wmv', '.mpeg', '.mp4', '.webm')):
-                self.generateThumbnail(fullPathFile)
-                thumbnl = self.createGtkImage("/tmp/image.png", [310, 310])
-                eveBox.connect("button_press_event", self.runMplayerProcess, (fullPathFile, file,))
-                eveBox.connect("enter_notify_event", self.mouseOver, (fullPathFile, file))
-                eveBox.connect("leave_notify_event", self.mouseOut, (fullPathFile, file))
+                fileHash   = hashlib.sha256(str.encode(fullPathFile)).hexdigest()
+                hashImgpth = self.usrHome + "/.thumbnails/normal/" + fileHash + ".png"
+                if os.path.isfile(hashImgpth) == False:
+                    self.generateThumbnail(fullPathFile, hashImgpth)
+
+                thumbnl = self.createGtkImage(hashImgpth, [310, 310])
+                eveBox.connect("button_press_event", self.runMplayerProcess, (fullPathFile, file, eveBox,))
+                eveBox.connect("enter_notify_event", self.mouseOver, ())
+                eveBox.connect("leave_notify_event", self.mouseOut, ())
             elif file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
                 thumbnl = self.createGtkImage(fullPathFile, [310, 310])
-                eveBox.connect("button_press_event", self.runImageViewerProcess, (fullPathFile, file))
-                eveBox.connect("enter_notify_event", self.mouseOver, (fullPathFile, file))
-                eveBox.connect("leave_notify_event", self.mouseOut, (fullPathFile, file))
+                eveBox.connect("button_press_event", self.runImageViewerProcess, (fullPathFile, file, eveBox,))
+                eveBox.connect("enter_notify_event", self.mouseOver, ())
+                eveBox.connect("leave_notify_event", self.mouseOut, ())
             else:
                 print("Not a video or image file.")
                 return
@@ -145,8 +159,8 @@ class GWinWrap:
     def addToGrid(self, args):
         args[0].attach(args[1], args[2], args[3], 1, 1)
 
-    def generateThumbnail(self, fullPathFile):
-        subprocess.call(["ffmpegthumbnailer", "-t", "65%", "-s", "300", "-c", "jpg", "-i", fullPathFile, "-o", "/tmp/image.png"])
+    def generateThumbnail(self, fullPathFile, hashImgpth):
+        subprocess.call(["ffmpegthumbnailer", "-t", "65%", "-s", "300", "-c", "jpg", "-i", fullPathFile, "-o", hashImgpth])
 
     def createGtkImage(self, path, wxh):
         try:
@@ -158,17 +172,26 @@ class GWinWrap:
             return gtk.Image.new_from_pixbuf(pixbuf)
         except Exception as e:
             print(e)
+
         return gtk.Image()
 
     def runMplayerProcess(self, widget, eve, params):
+        self.setSelected(params[2])
+        video = params[0] #.replace(" ", "\\ ")
+
         if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
-            subprocess.call(["mplayer", "-really-quiet", "-ao", "null", "-loop", "0", params[0]])
+            subprocess.call([self.player, video, "-really-quiet", "-ao", "null", "-loop", "0"])
 
         self.toSavePath = params[0]
         self.applyType  = 1
         self.helpLabel.set_markup("<span foreground=\"#e0cc64\">" + params[1] + "</span>")
 
+    def openMainImageViewer(self, widget):
+        subprocess.call([self.imgVwr, self.toSavePath])
+
     def runImageViewerProcess(self, widget, eve, params):
+        self.setSelected(params[2])
+
         if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
             previewWindow = self.builder.get_object("previewWindow")
             previewImg    = self.builder.get_object("previewImg")
@@ -180,22 +203,25 @@ class GWinWrap:
         self.applyType  = 2
         self.helpLabel.set_markup("<span foreground=\"#e0cc64\">" + params[1] + "</span>")
 
-    def openMainImageViewer(self, widget):
-        subprocess.call(["xdg-open", self.toSavePath])
+    def setSelected(self, eveBox):
+      if self.selectedImg:
+          col = gdk.RGBA(0.0, 0.0, 0.0, 0.0)
+          self.selectedImg.override_background_color(gtk.StateType.NORMAL, col)
+
+      col = gdk.RGBA(0.9, 0.7, 0.4, 0.74)
+      eveBox.override_background_color(gtk.StateType.NORMAL, col)
+      self.selectedImg = eveBox
 
     def closePopup(self, widget):
-        previewWindow = self.builder.get_object("previewWindow")
-        previewWindow.popdown()
+        self.builder.get_object("previewWindow").popdown()
 
     def mouseOver(self, widget, eve, args):
-        pass
-        # hand_cursor = gdk.Cursor(gdk.CursorType.GDK_HAND2)
-        # self.window.get_window().set_cursor(hand_cursor)
+        hand_cursor = gdk.Cursor(gdk.CursorType.HAND2)
+        self.window.get_window().set_cursor(hand_cursor)
 
     def mouseOut(self, widget, eve, args):
-        pass
-        # watch_cursor = gdk.Cursor(gdk.CursorType.GDK_LEFT_PTR)
-        # self.window.get_window().set_cursor(watch_cursor)
+        watch_cursor = gdk.Cursor(gdk.CursorType.LEFT_PTR)
+        self.window.get_window().set_cursor(watch_cursor)
 
     def toggleXscreenUsageField(self, widget, data=None):
         useXscreenSaver = self.builder.get_object("useXScrnList")
@@ -203,6 +229,21 @@ class GWinWrap:
             self.builder.get_object("xScreenSvrList").set_sensitive(True)
         else:
             self.builder.get_object("xScreenSvrList").set_sensitive(False)
+
+    def popSttingsWindow(self, widget):
+        self.builder.get_object("settingsWindow").popup()
+
+    def saveToSettingsFile(self, widget):
+        self.player = self.builder.get_object("customVideoPlyr").get_text().strip()
+        self.imgVwr = self.builder.get_object("customImgVwr").get_text().strip()
+        self.sttngsSver.saveSettings(self.player, self.imgVwr)
+
+    def retrieveSettings(self):
+        data = self.sttngsSver.retrieveSettings()
+        self.player = data[0]
+        self.imgVwr = data[1]
+        self.builder.get_object("customVideoPlyr").set_text(self.player)
+        self.builder.get_object("customImgVwr").set_text(self.imgVwr)
 
     def saveToFile(self, widget, data=None):
         saveLoc         = self.builder.get_object("saveLoc").get_active_text()

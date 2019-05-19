@@ -2,7 +2,7 @@
 
 import os
 
-class SaveState:
+class SaveStateToXWinWarp:
     def __init__(self):
         self.fileWriter  = None
         self.toSavePath    = None
