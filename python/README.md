@@ -1,5 +1,5 @@
 # GWinWrap
-GWinWrap is a Gtk wpic2ith Python gui to select videos for XWinWrap, images for Nitrogen Wallpaper Manager, and gifs for Gifsicle.
+GWinWrap is a Gtk with Python gui to select videos for XWinWrap, images for Nitrogen Wallpaper Manager, and gifs for Gifsicle.
 It includes the XWinWrap binary and source code for Shantanu Goel's version of XWinWrap.
 
 # Notes
