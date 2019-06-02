@@ -14,18 +14,18 @@ class SaveGWinWrapSettings:
             open(self.configFile, 'a').close()
 
 
-    def saveSettings(self, player, imgVwr):
+    def saveSettings(self, defPath, player, imgVwr):
         data = {}
         data['gwinwrap_settings'] = []
 
         data['gwinwrap_settings'].append({
-          'player': player,
-          'imgvwr': imgVwr
+          'defPath' : defPath,
+          'player'  : player,
+          'imgvwr'  : imgVwr
         })
 
         with open(self.configFile, 'w') as outfile:
             json.dump(data, outfile)
-
 
 
     def retrieveSettings(self):
@@ -35,14 +35,18 @@ class SaveGWinWrapSettings:
             try:
                 data = json.load(infile)
                 for obj in data['gwinwrap_settings']:
-                    returnData = [obj['player'], obj['imgvwr']]
+                    returnData = [obj['defPath'], obj['player'], obj['imgvwr']]
             except Exception as e:
-                returnData = ['mplayer', 'xdg-open']
+                returnData = ['', 'mplayer', 'xdg-open']
+
 
         if returnData[0] == '':
-            returnData[0] = 'mplayer'
+            returnData[0] = ''
 
         if returnData[1] == '':
-            returnData[1] = 'xdg-open'
+            returnData[1] = 'mplayer'
+
+        if returnData[2] == '':
+            returnData[2] = 'xdg-open'
 
         return returnData

@@ -34,9 +34,9 @@ class GWinWrap:
         self.window.connect("draw", self.area_draw)
 
         # bind css file
-        cssProvider = gtk.CssProvider()
+        cssProvider  = gtk.CssProvider()
         cssProvider.load_from_path('resources/stylesheet.css')
-        screen = gdk.Screen.get_default()
+        screen       = gdk.Screen.get_default()
         styleContext = gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_USER)
 
@@ -77,11 +77,13 @@ class GWinWrap:
             xscreenList.append((file,))
 
         self.selectedImg  = None  # EventBox holder
+        self.defPath      = None
         self.player       = None
         self.imgVwr       = None
-        self.retrieveSettings()
 
+        self.retrieveSettings()
         self.window.show()
+
 
     def area_draw(self, widget, cr):
         cr.set_source_rgba(0, 0, 0, 0.64)
@@ -234,16 +236,22 @@ class GWinWrap:
         self.builder.get_object("settingsWindow").popup()
 
     def saveToSettingsFile(self, widget):
-        self.player = self.builder.get_object("customVideoPlyr").get_text().strip()
-        self.imgVwr = self.builder.get_object("customImgVwr").get_text().strip()
-        self.sttngsSver.saveSettings(self.player, self.imgVwr)
+        self.defPath = self.builder.get_object("customDefaultPath").get_text().strip()
+        self.player  = self.builder.get_object("customVideoPlyr").get_text().strip()
+        self.imgVwr  = self.builder.get_object("customImgVwr").get_text().strip()
+
+        self.sttngsSver.saveSettings(self.defPath, self.player, self.imgVwr)
 
     def retrieveSettings(self):
-        data = self.sttngsSver.retrieveSettings()
-        self.player = data[0]
-        self.imgVwr = data[1]
+        data         = self.sttngsSver.retrieveSettings()
+        self.defPath = data[0]
+        self.player  = data[1]
+        self.imgVwr  = data[2]
+
+        self.builder.get_object("customDefaultPath").set_text(self.defPath)
         self.builder.get_object("customVideoPlyr").set_text(self.player)
         self.builder.get_object("customImgVwr").set_text(self.imgVwr)
+        self.builder.get_object("selectedDirDialog").set_filename(self.defPath)
 
     def saveToFile(self, widget, data=None):
         saveLoc         = self.builder.get_object("saveLoc").get_active_text()
