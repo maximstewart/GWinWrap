@@ -18,27 +18,18 @@ gdk.threads_init()
 
 class GWinWrap:
     def __init__(self):
-        self.builder   = gtk.Builder()
+        self.builder = gtk.Builder()
         self.builder.add_from_file("resources/GWinWrap.glade")
 
         # Get window and connect signals
-        self.window    = self.builder.get_object("Main")
+        window = self.builder.get_object("Main")
         self.builder.connect_signals(self)
-        self.window.connect("delete-event", gtk.main_quit)
-        self.screen    = self.window.get_screen()
-        self.visual    = self.screen.get_rgba_visual()
-        if self.visual != None and self.screen.is_composited():
-            self.window.set_visual(self.visual)
+        window.connect("delete-event", gtk.main_quit)
+        self.stateSaver = SaveStateToXWinWarp()
+        self.sttngsSver = SaveGWinWrapSettings()
+        monitors        = self.setWindowData(window)
 
-        self.window.set_app_paintable(True)
-        self.window.connect("draw", self.area_draw)
-
-        # bind css file
-        cssProvider  = gtk.CssProvider()
-        cssProvider.load_from_path('resources/stylesheet.css')
-        screen       = gdk.Screen.get_default()
-        styleContext = gtk.StyleContext()
-        styleContext.add_provider_for_screen(screen, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_USER)
+        print(monitors[1])
 
         # Add filter to allow only folders to be selected
         dialog         = self.builder.get_object("selectedDirDialog")
@@ -47,9 +38,6 @@ class GWinWrap:
 
         # Get reference to remove and add it back...
         self.gridLabel = self.builder.get_object("gridLabel")
-
-        self.stateSaver = SaveStateToXWinWarp()
-        self.sttngsSver = SaveGWinWrapSettings()
 
         self.focusedImg = gtk.Image()
         self.usrHome    = os.path.expanduser('~')
@@ -82,8 +70,25 @@ class GWinWrap:
         self.imgVwr       = None
 
         self.retrieveSettings()
-        self.window.show()
+        window.show()
 
+    def setWindowData(self, window):
+        screen    = window.get_screen()
+        visual    = screen.get_rgba_visual()
+        if visual != None and screen.is_composited():
+            window.set_visual(visual)
+
+        window.set_app_paintable(True)
+        window.connect("draw", self.area_draw)
+
+        # bind css file
+        cssProvider  = gtk.CssProvider()
+        cssProvider.load_from_path('resources/stylesheet.css')
+        screen       = gdk.Screen.get_default()
+        styleContext = gtk.StyleContext()
+        styleContext.add_provider_for_screen(screen, cssProvider, gtk.STYLE_PROVIDER_PRIORITY_USER)
+
+        return self.getMonitorData(screen)
 
     def area_draw(self, widget, cr):
         cr.set_source_rgba(0, 0, 0, 0.64)
@@ -91,7 +96,18 @@ class GWinWrap:
         cr.paint()
         cr.set_operator(cairo.OPERATOR_OVER)
 
+    def getMonitorData(self, screen):
+        monitors = []
+        wxhxny   = []
 
+        for m in range(screen.get_n_monitors()):
+            monitors.append(screen.get_monitor_geometry(m))
+
+        wxhxny.append(monitors)
+        for monitor in monitors:
+            wxhxny.append(str(monitor.width) + "x" + str(monitor.height) + "+" + str(monitor.x) + "+" + str(monitor.y))
+
+        return wxhxny
 
 
     def setNewDir(self, widget, data=None):
