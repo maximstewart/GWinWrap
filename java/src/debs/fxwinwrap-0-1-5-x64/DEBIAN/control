@@ -1,8 +1,0 @@
-Package: fxwinwrap64
-Version: 0.1-5
-Section: java
-Priority: optional
-Architecture: amd64
-Depends: openjdk-8-jre (>= 8u45-b14-1), openjfx (>= 8u60-b27-4), ffmpegthumbnailer (>= 2.0.10-0.1), mplayer2 (>=2.0-728-g2c378c7-4), gifsicle (>=1.86-1), nitrogen (>=1.5.2-2)
-Maintainer: Maxim Stewart <1itdominator@gmail.com>
-Description: FXWinWrap is a GUI to handle setting XWinWrap options.

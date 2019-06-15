@@ -1,9 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Name=GWinWrap
-Comment=Glade gui with python controls for XWinWrap
-Exec=/bin/gwinwrap
-Icon=/opt/GWinWrap/resources/GWinWrap.png
-Terminal=false
-Type=Application
-Categories=System;
