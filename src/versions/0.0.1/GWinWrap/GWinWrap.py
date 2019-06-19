@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, cairo, sys, gi, re, threading, subprocess, hashlib
+import os, cairo, sys, gi, re, threading, subprocess, hashlib, signal, time
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
@@ -68,6 +68,7 @@ class GWinWrap:
         self.defPath      = None
         self.player       = None
         self.imgVwr       = None
+        self.xScrnDemoPid    = None
 
         self.retrieveSettings()
         window.show()
@@ -307,8 +308,30 @@ class GWinWrap:
 
     def previewXscreen(self, widget, eve):
         if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
-            preview = self.xscrPth + "/" + self.xScreenVal + "&"
-            os.system(preview)
+            # Must be actualized before getting window
+            demoWindow = self.builder.get_object("xScrnPreviewPopWindow")
+            self.helpLabel.set_markup("<span foreground=\"#e0cc64\"></span>")
+
+            if self.xScrnDemoPid:
+                os.kill(self.xScrnDemoPid, signal.SIGTERM) #or signal.SIGKILL
+                self.xScrnDemoPid = None
+
+            if demoWindow.get_visible() == False:
+                demoWindow.show_all()
+                demoWindow.popup()
+
+            time.sleep(.800) # 800 mili-seconds to ensure first process dead
+            xScreenPreview    = self.builder.get_object("xScreenPreview")
+            demoXscrnSaver    = self.xscrPth + self.xScreenVal
+            window            = xScreenPreview.get_window()
+            xid               = window.get_xid()
+            process           = subprocess.Popen([demoXscrnSaver, "-window-id", str(xid)])
+            self.xScrnDemoPid = process.pid
+
+    def closeDemoWindow(self, widget, data=None):
+        self.builder.get_object("xScrnPreviewPopWindow").popdown()
+        os.kill(self.xScrnDemoPid, signal.SIGTERM) #or signal.SIGKILL
+        self.xScrnDemoPid = None
 
     def clearSelection(self, widget, data=None):
         self.clear()
