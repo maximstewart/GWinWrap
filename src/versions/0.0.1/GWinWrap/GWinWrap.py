@@ -37,13 +37,13 @@ class GWinWrap:
         dialog.add_filter(filefilter)
 
         # Get reference to remove and add it back...
-        self.gridLabel  = self.builder.get_object("gridLabel")
+        self.gridLabel    = self.builder.get_object("gridLabel")
 
-        self.focusedImg = gtk.Image()
-        self.usrHome    = os.path.expanduser('~')
-        self.xScreenVal = None
-        self.toSavePath = None # Global file path and type for saving to file
-        self.applyType  = 1    # 1 is XWinWrap and 2 is Nitrogen
+        self.focusedImg   = gtk.Image()
+        self.usrHome      = os.path.expanduser('~')
+        self.xScreenVal   = None
+        self.toSavePath   = None # Global file path and type for saving to file
+        self.applyType    = 1    # 1 is XWinWrap and 2 is Nitrogen
 
         self.loadProgress = self.builder.get_object("loadProgress")
         self.helpLabel    = self.builder.get_object("helpLabel")
@@ -68,7 +68,7 @@ class GWinWrap:
         self.defPath      = None
         self.player       = None
         self.imgVwr       = None
-        self.xScrnDemoPid    = None
+        self.demoAreaPid  = None
 
         self.retrieveSettings()
         window.show()
@@ -194,16 +194,6 @@ class GWinWrap:
 
         return gtk.Image()
 
-    def runMplayerProcess(self, widget, eve, params):
-        self.setSelected(params[2])
-        video = params[0] #.replace(" ", "\\ ")
-
-        if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
-            subprocess.call([self.player, video, "-really-quiet", "-ao", "null", "-loop", "0"])
-
-        self.toSavePath = params[0]
-        self.applyType  = 1
-        self.helpLabel.set_markup("<span foreground=\"#e0cc64\">" + params[1] + "</span>")
 
     def openMainImageViewer(self, widget):
         subprocess.call([self.imgVwr, self.toSavePath])
@@ -306,32 +296,57 @@ class GWinWrap:
         treeiter        = xSvrListStore.get_iter(path[0])
         self.xScreenVal = xSvrListStore.get_value(treeiter, 0)
 
+
+    def runMplayerProcess(self, widget, eve, params):
+        self.setSelected(params[2])
+        video = params[0]
+
+        if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
+            if self.player == "mplayer":
+                xid     = self.getXID()
+                command = [self.player, video, "-slave", "-wid", str(xid), "-really-quiet", "-ao", "null", "-loop", "0"]
+                self.runDemoToDrawArea(command)
+            else:
+                subprocess.call([self.player, video, "-really-quiet", "-ao", "null", "-loop", "0"])
+
+        self.toSavePath = params[0]
+        self.applyType  = 1
+        self.helpLabel.set_markup("<span foreground=\"#e0cc64\">" + params[1] + "</span>")
+
     def previewXscreen(self, widget, eve):
         if eve.type == gdk.EventType.DOUBLE_BUTTON_PRESS:
-            # Must be actualized before getting window
-            demoWindow = self.builder.get_object("xScrnPreviewPopWindow")
-            self.helpLabel.set_markup("<span foreground=\"#e0cc64\"></span>")
+            demoXscrnSaver = self.xscrPth + self.xScreenVal
+            xid            = self.getXID()
+            command        = [demoXscrnSaver, "-window-id", str(xid)]
+            self.runDemoToDrawArea(command)
 
-            if self.xScrnDemoPid:
-                os.kill(self.xScrnDemoPid, signal.SIGTERM) #or signal.SIGKILL
-                self.xScrnDemoPid = None
+    def getXID(self):
+        # Must be actualized before getting window
+        demoWindowPopup = self.builder.get_object("demoPreviewPopWindow")
 
-            if demoWindow.get_visible() == False:
-                demoWindow.show_all()
-                demoWindow.popup()
+        if demoWindowPopup.get_visible() == False:
+            demoWindowPopup.show_all()
+            demoWindowPopup.popup()
 
-            time.sleep(.800) # 800 mili-seconds to ensure first process dead
-            xScreenPreview    = self.builder.get_object("xScreenPreview")
-            demoXscrnSaver    = self.xscrPth + self.xScreenVal
-            window            = xScreenPreview.get_window()
-            xid               = window.get_xid()
-            process           = subprocess.Popen([demoXscrnSaver, "-window-id", str(xid)])
-            self.xScrnDemoPid = process.pid
+        demoPreview = self.builder.get_object("demoPreview")
+        drwWindow   = demoPreview.get_window()
+        return drwWindow.get_xid()
+
+    def runDemoToDrawArea(self, command):
+        self.helpLabel.set_markup("<span foreground=\"#e0cc64\"></span>")
+
+        if self.demoAreaPid:
+            os.kill(self.demoAreaPid, signal.SIGTERM) #or signal.SIGKILL
+            self.demoAreaPid = None
+
+        time.sleep(.800) # 800 mili-seconds to ensure first process dead
+        process          = subprocess.Popen(command)
+        self.demoAreaPid = process.pid
 
     def closeDemoWindow(self, widget, data=None):
-        self.builder.get_object("xScrnPreviewPopWindow").popdown()
-        os.kill(self.xScrnDemoPid, signal.SIGTERM) #or signal.SIGKILL
-        self.xScrnDemoPid = None
+        self.builder.get_object("demoPreviewPopWindow").popdown()
+        os.kill(self.demoAreaPid, signal.SIGTERM) #or signal.SIGKILL
+        self.demoAreaPid = None
 
     def clearSelection(self, widget, data=None):
         self.clear()
