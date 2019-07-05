@@ -5,7 +5,12 @@ import os, cairo, sys, gi, re, threading, subprocess, hashlib, signal, time
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 
-from gi.repository import Gtk as gtk, Gdk as gdk, GObject as gobject, GdkPixbuf
+from gi.repository import Gtk as gtk
+from gi.repository import Gdk as gdk
+from gi.repository import GObject as gobject
+from gi.repository import GdkPixbuf
+from gi.repository import GLib
+
 
 from os import listdir
 from os.path import isfile, join
@@ -28,8 +33,7 @@ class GWinWrap:
         window          = self.builder.get_object("Main")
         monitors        = self.setWindowData(window)
         window.connect("delete-event", gtk.main_quit)
-
-        print(monitors[1])
+        GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGINT, gtk.main_quit)
 
         # Add filter to allow only folders to be selected
         dialog         = self.builder.get_object("selectedDirDialog")
@@ -98,6 +102,7 @@ class GWinWrap:
         cr.set_operator(cairo.OPERATOR_OVER)
 
     def getMonitorData(self, screen):
+        posOff   = self.builder.get_object("posOffset")
         monitors = []
         wxhxny   = []
 
@@ -108,6 +113,16 @@ class GWinWrap:
         for monitor in monitors:
             wxhxny.append(str(monitor.width) + "x" + str(monitor.height) + "+" + str(monitor.x) + "+" + str(monitor.y))
 
+            if monitor.x >= 0 and monitor.y >= 0:
+                posOff.append_text("+" + str(monitor.x) + "+" + str(monitor.y))
+            elif monitor.x <= 0 and monitor.y <= 0:
+                posOff.append_text(str(monitor.x) + str(monitor.y))
+            elif monitor.x >= 0 and monitor.y <= 0:
+                posOff.append_text("+" + str(monitor.x) + str(monitor.y))
+            elif monitor.x <= 0 and monitor.y >= 0:
+                posOff.append_text(str(monitor.x) + "+" + str(monitor.y))
+
+        posOff.set_active(0)
         return wxhxny
 
 

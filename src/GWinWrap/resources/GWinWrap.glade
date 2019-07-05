@@ -387,46 +387,6 @@
                           <object class="GtkComboBoxText" id="posOffset">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="active">18</property>
-                            <items>
-                              <item translatable="yes">Left</item>
-                              <item translatable="yes">-7680+0</item>
-                              <item translatable="yes">-3840+0</item>
-                              <item translatable="yes">-2048+0</item>
-                              <item translatable="yes">-1920+0</item>
-                              <item translatable="yes">-1440+0</item>
-                              <item translatable="yes">-1600+0</item>
-                              <item translatable="yes">-1280+0</item>
-                              <item translatable="yes">-800+0</item>
-                              <item translatable="yes">Right</item>
-                              <item translatable="yes">+7680+0</item>
-                              <item translatable="yes">+3840+0</item>
-                              <item translatable="yes">+2048+0</item>
-                              <item translatable="yes">+1920+0</item>
-                              <item translatable="yes">+1440+0</item>
-                              <item translatable="yes">+1600+0</item>
-                              <item translatable="yes">+1280+0</item>
-                              <item translatable="yes">+800+0</item>
-                              <item translatable="yes">+0+0</item>
-                              <item translatable="yes">Top</item>
-                              <item translatable="yes">+0+7680</item>
-                              <item translatable="yes">+0+3840</item>
-                              <item translatable="yes">+0+2048</item>
-                              <item translatable="yes">+0+1920</item>
-                              <item translatable="yes">+0+1440</item>
-                              <item translatable="yes">+0+1600</item>
-                              <item translatable="yes">0+1280</item>
-                              <item translatable="yes">+0+800</item>
-                              <item translatable="yes">Bottum</item>
-                              <item translatable="yes">+0-7680</item>
-                              <item translatable="yes">+0-3840</item>
-                              <item translatable="yes">+0-2048</item>
-                              <item translatable="yes">+0-1920</item>
-                              <item translatable="yes">+0-1440</item>
-                              <item translatable="yes">+0-1600</item>
-                              <item translatable="yes">0-1280</item>
-                              <item translatable="yes">+0-800</item>
-                            </items>
                           </object>
                           <packing>
                             <property name="expand">True</property>
