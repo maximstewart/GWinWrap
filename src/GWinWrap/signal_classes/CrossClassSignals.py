@@ -125,7 +125,7 @@ class CrossClassSignals:
                 eveBox.connect("leave_notify_event", self.mouseOut, ())
             else:
                 print("Not a video or image file.")
-                return
+                continue
 
             glib.idle_add(self.preGridSetup, (eveBox, thumbnl, ))
             glib.idle_add(self.addToGrid, (imageGrid, eveBox, col, row,))
@@ -228,6 +228,10 @@ class CrossClassSignals:
         self.builder.get_object("customVideoPlyr").set_text(self.player)
         self.builder.get_object("customImgVwr").set_text(self.imgVwr)
         self.builder.get_object("selectedDirDialog").set_filename(self.defPath)
+
+        if self.defPath:
+            self.newDir(self.defPath)
+
 
     def saveToFile(self, widget, data=None):
         saveLoc         = self.builder.get_object("saveLoc").get_active_text()
