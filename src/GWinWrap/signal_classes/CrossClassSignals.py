@@ -148,7 +148,7 @@ class CrossClassSignals:
         args[0].attach(args[1], args[2], args[3], 1, 1)
 
     def generateThumbnail(self, fullPathFile, hashImgpth):
-        subprocess.call(["ffmpegthumbnailer", "-t", "65%", "-s", "300", "-c", "jpg", "-i", fullPathFile, "-o", hashImgpth])
+        subprocess.call(["ffmpeg", "-i", fullPathFile, "-vframes", "1", "-s", "320x180", "-q:v", "2", hashImgpth])
 
     def createGtkImage(self, path, wxh):
         try:
@@ -311,15 +311,16 @@ class CrossClassSignals:
         if self.demoAreaPid:
             os.kill(self.demoAreaPid, signal.SIGTERM) #or signal.SIGKILL
             self.demoAreaPid = None
+            time.sleep(.800) # 800 mili-seconds to ensure first process dead
 
-        time.sleep(.800) # 800 mili-seconds to ensure first process dead
         process          = subprocess.Popen(command)
         self.demoAreaPid = process.pid
 
     def closeDemoWindow(self, widget, data=None):
-        self.builder.get_object("demoPreviewPopWindow").popdown()
         os.kill(self.demoAreaPid, signal.SIGTERM) #or signal.SIGKILL
         self.demoAreaPid = None
+        time.sleep(.200)
+        self.builder.get_object("demoPreviewPopWindow").popdown()
 
     def clearSelection(self, widget, data=None):
         self.clear()
