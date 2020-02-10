@@ -84,6 +84,7 @@ class CrossClassSignals:
         dir = widget.get_filename()
         threading.Thread(target=self.newDir, args=(dir,)).start()
 
+    @threaded
     def newDir(self, dir):
         imageGrid  = self.builder.get_object("imageGrid")
         dirPath    = dir
@@ -148,7 +149,33 @@ class CrossClassSignals:
         args[0].attach(args[1], args[2], args[3], 1, 1)
 
     def generateThumbnail(self, fullPathFile, hashImgpth):
-        subprocess.call(["ffmpeg", "-i", fullPathFile, "-vframes", "1", "-s", "320x180", "-q:v", "2", hashImgpth])
+        # Stream duration
+        command  = ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=duration", "-of", "default=noprint_wrappers=1:nokey=1", fullPathFile]
+        data     = subprocess.run(command, stdout=subprocess.PIPE)
+        duration = data.stdout.decode('utf-8')
+
+        # Format (container) duration
+        if "N/A" in duration:
+            command  = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", fullPathFile]
+            data     = subprocess.run(command , stdout=subprocess.PIPE)
+            duration = data.stdout.decode('utf-8')
+
+        # Stream duration type: image2
+        if "N/A" in duration:
+            command  = ["ffprobe", "-v", "error", "-select_streams", "v:0", "-f", "image2", "-show_entries", "stream=duration", "-of", "default=noprint_wrappers=1:nokey=1", fullPathFile]
+            data     = subprocess.run(command, stdout=subprocess.PIPE)
+            duration = data.stdout.decode('utf-8')
+
+        # Format (container) duration type: image2
+        if "N/A" in duration:
+            command  = ["ffprobe", "-v", "error", "-f", "image2", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", fullPathFile]
+            data     = subprocess.run(command , stdout=subprocess.PIPE)
+            duration = data.stdout.decode('utf-8')
+
+        # Get frame roughly 35% through video
+        grabTime = str( int( float( duration.split(".")[0] ) * 0.35) )
+        command = ["ffmpeg", "-ss", grabTime, "-i", fullPathFile, "-an", "-vframes", "1", "-s", "320x180", "-q:v", "2", hashImgpth]
+        subprocess.call(command)
 
     def createGtkImage(self, path, wxh):
         try:
