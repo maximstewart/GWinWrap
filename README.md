@@ -3,7 +3,10 @@ GWinWrap is a Gtk with Python gui to select videos for XWinWrap, images for Nitr
 It includes the XWinWrap binary and source code for Shantanu Goel's version of XWinWrap.
 
 # Notes
-Need python 2+
+* Need python 2+
+* When you first run the application and save settings for a screen, you need to chmod 744 the new file(s) in your $HOME directory.
+* A settings file per screen is generated.
+
 
 # Images
 ![1 Default view starting out. ](images/pic1.png)
@@ -14,7 +17,9 @@ Need python 2+
 ![6 Settings window poped open. ](images/pic6.png)
 
 # TODO
-Nothing...
+* Better/automatic screen detection.
+* Run chmod against newly created launch scripts.
+
 
 # Credit
 GWinWrap python and glade by: Maxim Stewart  -- https://www.itdominator.com/
