@@ -1,0 +1,9 @@
+{
+    "settings":[
+        {
+            "start_path":"/home/abaddon/LazyShare/Movies-TV-Music/Dream Scenes/Games/Halo",
+            "default_player":"mpv",
+            "default_img_viewer":"mirage"
+        }
+    ]
+}
