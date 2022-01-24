@@ -29,7 +29,7 @@ class Settings:
         self._XSCREEN_SAVERS = "/usr/lib/xscreensaver/"
 
 
-        self._logger        = Logger().get_logger()
+        self._logger        = Logger(self._CONFIG_PATH).get_logger()
         self._builder       = Gtk.Builder()
         self._main_window   = None
 
