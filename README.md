@@ -4,6 +4,7 @@ It includes the XWinWrap binary and source code for Shantanu Goel's version of X
 
 # Notes
 * Need python 2+
+* Need PyGObject
 * When you first run the application and save settings for a screen, you need to chmod 744 the new file(s) in your $HOME directory.
 * A settings file per screen is generated.
 

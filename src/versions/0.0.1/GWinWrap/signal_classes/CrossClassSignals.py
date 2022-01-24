@@ -84,7 +84,6 @@ class CrossClassSignals:
         dir = widget.get_filename()
         threading.Thread(target=self.newDir, args=(dir,)).start()
 
-    @threaded
     def newDir(self, dir):
         imageGrid  = self.builder.get_object("imageGrid")
         dirPath    = dir
@@ -97,41 +96,15 @@ class CrossClassSignals:
             if file.lower().endswith(('.mkv', '.avi', '.flv', '.mov', '.m4v', '.mpg', '.wmv', '.mpeg', '.mp4', '.webm', '.png', '.jpg', '.jpeg', '.gif')):
                 files.append(file)
 
-        fractionTick = 1.0 / 1.0 if len(files) == 0 else len(files)
-        tickCount    = 0.0
+        # fractionTick = 1.0 / 1.0 if len(files) == 0 else len(files)
+        # tickCount    = 0.0
         self.clear()
         imageGrid.remove_column(0)
         self.loadProgress.set_text("Loading...")
         self.loadProgress.set_fraction(0.0)
         self.helpLabel.set_markup("<span foreground=\"#b30ec2\">" + dirPath.strip(self.usrHome) + "</span>")
         for file in files:
-            fullPathFile = dirPath + "/" + file
-            eveBox       = gtk.EventBox()
-            thumbnl      = gtk.Image()
-
-            if file.lower().endswith(('.mkv', '.avi', '.flv', '.mov', '.m4v', '.mpg', '.wmv', '.mpeg', '.mp4', '.webm')):
-                fileHash   = hashlib.sha256(str.encode(fullPathFile)).hexdigest()
-                hashImgpth = self.usrHome + "/.thumbnails/normal/" + fileHash + ".png"
-                if isfile(hashImgpth) == False:
-                    self.generateThumbnail(fullPathFile, hashImgpth)
-
-                thumbnl = self.createGtkImage(hashImgpth, [310, 310])
-                eveBox.connect("button_press_event", self.runMplayerProcess, (fullPathFile, file, eveBox,))
-                eveBox.connect("enter_notify_event", self.mouseOver, ())
-                eveBox.connect("leave_notify_event", self.mouseOut, ())
-            elif file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
-                thumbnl = self.createGtkImage(fullPathFile, [310, 310])
-                eveBox.connect("button_press_event", self.runImageViewerProcess, (fullPathFile, file, eveBox,))
-                eveBox.connect("enter_notify_event", self.mouseOver, ())
-                eveBox.connect("leave_notify_event", self.mouseOut, ())
-            else:
-                print("Not a video or image file.")
-                continue
-
-            glib.idle_add(self.preGridSetup, (eveBox, thumbnl, ))
-            glib.idle_add(self.addToGrid, (imageGrid, eveBox, col, row,))
-            tickCount = tickCount + fractionTick
-            self.loadProgress.set_fraction(tickCount)
+            self.porocess_file(imageGrid, dirPath, file, col, row)
 
             col += 1
             if col == 2:
@@ -139,6 +112,39 @@ class CrossClassSignals:
                 row += 1
 
         self.loadProgress.set_text("Finished...")
+
+    @threaded
+    def porocess_file(self, imageGrid, dirPath, file, col, row):
+        fullPathFile = dirPath + "/" + file
+        eveBox       = gtk.EventBox()
+        thumbnl      = gtk.Image()
+
+        if file.lower().endswith(('.mkv', '.avi', '.flv', '.mov', '.m4v', '.mpg', '.wmv', '.mpeg', '.mp4', '.webm')):
+            fileHash   = hashlib.sha256(str.encode(fullPathFile)).hexdigest()
+            hashImgpth = self.usrHome + "/.thumbnails/normal/" + fileHash + ".png"
+            if isfile(hashImgpth) == False:
+                self.generateThumbnail(fullPathFile, hashImgpth)
+
+            thumbnl = self.createGtkImage(hashImgpth, [310, 310])
+            eveBox.connect("button_press_event", self.runMplayerProcess, (fullPathFile, file, eveBox,))
+            eveBox.connect("enter_notify_event", self.mouseOver, ())
+            eveBox.connect("leave_notify_event", self.mouseOut, ())
+        elif file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+            thumbnl = self.createGtkImage(fullPathFile, [310, 310])
+            eveBox.connect("button_press_event", self.runImageViewerProcess, (fullPathFile, file, eveBox,))
+            eveBox.connect("enter_notify_event", self.mouseOver, ())
+            eveBox.connect("leave_notify_event", self.mouseOut, ())
+        else:
+            print("Not a video or image file.")
+            return
+
+        glib.idle_add(self.preGridSetup, (eveBox, thumbnl, ))
+        glib.idle_add(self.addToGrid, (imageGrid, eveBox, col, row,))
+        # tickCount = tickCount + fractionTick
+        # self.loadProgress.set_fraction(tickCount)
+
+
+
 
     def preGridSetup(self, args):
         args[0].show()
@@ -267,7 +273,7 @@ class CrossClassSignals:
         offset4Res      = self.builder.get_object("posOffset")
         resolution      = plyBckRes.get_active_text() + offset4Res.get_active_text()
         self.applyType  = self.stateSaver.saveToFile(self.toSavePath, resolution,
-                            saveLoc, useXscreenSaver, self.xScreenVal)
+                            saveLoc, useXscreenSaver, self.xScreenVal, self.player)
         if self.applyType == -1:
             self.helpLabel.set_markup("<span foreground=\"#e0cc64\">Nothing saved...</span>")
             return
@@ -277,8 +283,11 @@ class CrossClassSignals:
     def applySttngs(self, widget, data=None):
         os.system("killall xwinwrap &")
         if self.applyType == 1:
-            os.system("bash -c '~/.animatedBGstarter.sh' &")
-            os.system("bash -c '~/.animatedBGstarter2.sh' &")
+            files = os.listdir(self.usrHome)
+            for file in files:
+                fPath = self.usrHome + "/" + file
+                if os.path.isfile(fPath) and "animatedBGstarter" in file:
+                    os.system("bash -c '~/" + file + "' &")
         elif self.applyType == 2:
             os.system("nitrogen --restore &")
         else:

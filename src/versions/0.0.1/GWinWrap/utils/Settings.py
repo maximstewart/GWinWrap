@@ -58,7 +58,7 @@ class Settings:
             monitors.append(screen.get_monitor_geometry(m))
 
         for monitor in monitors:
-            print(str(monitor.width) + "x" + str(monitor.height) + "+" + str(monitor.x) + "+" + str(monitor.y))
+            print("{}x{}+{}+{}".format(monitor.width, monitor.height, monitor.x, monitor.y))
 
         return monitors
 
