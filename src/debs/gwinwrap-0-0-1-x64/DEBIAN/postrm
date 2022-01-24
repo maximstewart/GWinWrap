@@ -1,0 +1,11 @@
+#!/bin/bash
+#postrm (script executed after uninstalling the package)
+#set -e
+
+if [ -f /bin/xwinwrap ]; then
+    rm /bin/xwinwrap
+fi
+
+if [ -d /opt/GWinWrap ]; then
+    rm -rf /opt/GWinWrap
+fi
