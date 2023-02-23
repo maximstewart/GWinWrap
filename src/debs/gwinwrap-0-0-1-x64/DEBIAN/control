@@ -1,8 +1,0 @@
-Package: gwinwrap64
-Version: 0.0-1
-Section: python
-Priority: optional
-Architecture: amd64
-Depends: ffmpegthumbnailer (>= 2.0.10-0.1), mplayer (>=2.0-728-g2c378c7-4), gifsicle (>=1.86-1), nitrogen (>=1.5.2-2), xscreensaver (>=5.36-1ubuntu1), xscreensaver-gl (>=5.36-1ubuntu1), xscreensaver-gl-extra (>=5.36-1ubuntu1), xscreensaver-screensaver-dizzy (>=0.3-3), xscreensaver-screensaver-bsod (>=5.36-1ubuntu1), xscreensaver-data (>=5.36-1ubuntu1), xscreensaver-data-extra (>=5.36-1ubuntu1), xscreensaver-screensaver-webcollage (>=5.36-1ubuntu1)
-Maintainer: Maxim Stewart <1itdominator@gmail.com>
-Description: GWinWrap is a GUI to handle setting XWinWrap options.

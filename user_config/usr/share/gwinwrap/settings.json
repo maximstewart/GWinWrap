@@ -1,9 +1,36 @@
 {
-    "settings":[
-        {
-            "start_path":"/home/abaddon/LazyShare/Movies-TV-Music/Dream Scenes/Games/Halo",
-            "default_player":"mpv",
-            "default_img_viewer":"mirage"
-        }
-    ]
+    "config":{
+        "start_path":"",
+        "xscreensaver_path":"/usr/lib/xscreensaver/",
+        "default_player":"mpv",
+        "default_img_viewer":"mirage"
+    },
+    "filters":{
+        "videos":[
+            ".mkv",
+            ".mp4",
+            ".webm",
+            ".avi",
+            ".mov",
+            ".m4v",
+            ".mpg",
+            ".mpeg",
+            ".wmv",
+            ".flv"
+        ],
+        "images":[
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".gif",
+            ".ico",
+            ".tga",
+            ".webp"
+        ]
+    },
+    "theming":{
+        "success_color":"#88cc27",
+        "warning_color":"#ffa800",
+        "error_color":"#ff0000"
+    }
 }

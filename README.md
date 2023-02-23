@@ -19,7 +19,6 @@ It includes the XWinWrap binary and source code for Shantanu Goel's version of X
 
 # TODO
 * Better/automatic screen detection.
-* Run chmod against newly created launch scripts.
 
 
 # Credit

@@ -6,8 +6,16 @@ if [ -f /bin/xwinwrap ]; then
     rm /bin/xwinwrap
 fi
 
-if [ -d /opt/GWinWrap ]; then
-    rm -rf /opt/GWinWrap
+if [ -f /bin/gwinwrap ]; then
+    rm /bin/gwinwrap
+fi
+
+if [ -f /usr/share/applications/gwinwrap.desktop ]; then
+    rm /usr/share/applications/gwinwrap.desktop
+fi
+
+if [ -f /opt/gwinwrap.zip ]; then
+    rm /opt/gwinwrap.zip
 fi
 
 if [ -d /usr/share/gwinwrap ]; then

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkFileFilter" id="Folders">
@@ -30,6 +30,11 @@
     <property name="can-focus">False</property>
     <property name="stock">gtk-cancel</property>
     <property name="icon_size">3</property>
+  </object>
+  <object class="GtkImage" id="closePopupImage2">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-close</property>
   </object>
   <object class="GtkImage" id="openProgImage">
     <property name="visible">True</property>
@@ -68,90 +73,45 @@
     <property name="stock">gtk-media-stop</property>
     <property name="icon_size">3</property>
   </object>
-  <object class="GtkWindow" id="Main_Window">
-    <property name="width-request">950</property>
-    <property name="height-request">600</property>
+  <object class="GtkBox" id="core_widget">
+    <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <property name="title" translatable="yes">GWinWrap</property>
-    <property name="window-position">center</property>
-    <property name="default-width">950</property>
-    <property name="default-height">600</property>
-    <property name="icon">icons/GWinWrap.png</property>
-    <property name="gravity">center</property>
     <child>
-      <object class="GtkBox" id="box1">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="margin-left">15</property>
+        <property name="margin-top">15</property>
+        <property name="margin-bottom">15</property>
+        <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-left">15</property>
-            <property name="margin-top">15</property>
-            <property name="margin-bottom">15</property>
-            <property name="orientation">vertical</property>
+            <property name="margin-bottom">5</property>
             <child>
-              <object class="GtkBox">
+              <object class="GtkLabel" id="helpLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-bottom">5</property>
-                <child>
-                  <object class="GtkLabel" id="helpLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-right">15</property>
-                    <property name="label" translatable="yes">Note: Double click an image to view the video or image.</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkFileChooserButton" id="selectedDirDialog">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="tooltip-text" translatable="yes">Chose Dream Scene / Image Directory</property>
-                    <property name="action">select-folder</property>
-                    <property name="create-folders">False</property>
-                    <property name="filter">Folders</property>
-                    <property name="title" translatable="yes">Dream Scene / Image Dir</property>
-                    <signal name="file-set" handler="set_new_path" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="button1">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">True</property>
-                    <property name="image">settingsImage</property>
-                    <property name="always-show-image">True</property>
-                    <signal name="clicked" handler="show_settings_popup" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
+                <property name="margin-right">15</property>
+                <property name="label" translatable="yes">Note: Double click an image to view the video or image.</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkProgressBar" id="loadProgress">
+              <object class="GtkFileChooserButton" id="selectedDirDialog">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="show-text">True</property>
+                <property name="tooltip-text" translatable="yes">Chose Dream Scene / Image Directory</property>
+                <property name="action">select-folder</property>
+                <property name="create-folders">False</property>
+                <property name="filter">Folders</property>
+                <property name="title" translatable="yes">Dream Scene / Image Dir</property>
+                <signal name="file-set" handler="set_new_path" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -160,63 +120,190 @@
               </packing>
             </child>
             <child>
+              <object class="GtkButton" id="button1">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="image">settingsImage</property>
+                <property name="always-show-image">True</property>
+                <signal name="clicked" handler="show_settings_popup" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkProgressBar" id="loadProgress">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="show-text">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <!-- n-columns=3 n-rows=3 -->
+                  <object class="GtkGrid" id="imageGrid">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <property name="row-spacing">10</property>
+                    <property name="column-spacing">10</property>
+                    <property name="row-homogeneous">True</property>
+                    <property name="column-homogeneous">True</property>
+                    <child>
+                      <object class="GtkLabel" id="gridLabel">
+                        <property name="width-request">640</property>
+                        <property name="height-request">525</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="label" translatable="yes">Choose Image/Video Directory...</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Times New Roman, 28"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">Clear</property>
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="image">clearImage</property>
+            <property name="always-show-image">True</property>
+            <signal name="clicked" handler="clear_selection" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="width-request">300</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="margin-left">10</property>
+        <property name="margin-right">15</property>
+        <property name="margin-top">15</property>
+        <property name="margin-bottom">15</property>
+        <property name="hexpand">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkCheckButton" id="useXScrnList">
+                <property name="label" translatable="yes">Use XScreenSaver</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">False</property>
+                <property name="halign">center</property>
+                <property name="margin-bottom">5</property>
+                <property name="draw-indicator">True</property>
+                <signal name="toggled" handler="toggle_xscreen_list" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkScrolledWindow">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="shadow-type">in</property>
                 <child>
-                  <object class="GtkViewport">
+                  <object class="GtkTreeView" id="xScreenSvrList">
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
+                    <property name="sensitive">False</property>
+                    <property name="can-focus">True</property>
+                    <property name="model">XScreensaverStore</property>
+                    <property name="headers-visible">False</property>
+                    <signal name="button-press-event" handler="preview_xscreensaver" swapped="no"/>
+                    <signal name="cursor-changed" handler="pass_xscreen_value" swapped="no"/>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection"/>
+                    </child>
                     <child>
-                      <!-- n-columns=3 n-rows=3 -->
-                      <object class="GtkGrid" id="imageGrid">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="orientation">vertical</property>
-                        <property name="row-spacing">10</property>
-                        <property name="column-spacing">10</property>
-                        <property name="row-homogeneous">True</property>
-                        <property name="column-homogeneous">True</property>
+                      <object class="GtkTreeViewColumn" id="listColumn">
+                        <property name="title" translatable="yes">XScreensaves</property>
                         <child>
-                          <object class="GtkLabel" id="gridLabel">
-                            <property name="width-request">640</property>
-                            <property name="height-request">525</property>
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Choose Image/Video Directory...</property>
-                            <attributes>
-                              <attribute name="font-desc" value="Times New Roman, 28"/>
-                            </attributes>
-                          </object>
-                          <packing>
-                            <property name="left-attach">0</property>
-                            <property name="top-attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
+                          <object class="GtkCellRendererText"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
                         </child>
                       </object>
                     </child>
@@ -226,23 +313,7 @@
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">Clear</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-                <property name="image">clearImage</property>
-                <property name="always-show-image">True</property>
-                <signal name="clicked" handler="clear_selection" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -254,14 +325,9 @@
         </child>
         <child>
           <object class="GtkBox">
-            <property name="width-request">300</property>
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-left">10</property>
-            <property name="margin-right">15</property>
-            <property name="margin-top">15</property>
-            <property name="margin-bottom">15</property>
-            <property name="hexpand">False</property>
+            <property name="vexpand">False</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkBox">
@@ -269,15 +335,37 @@
                 <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkCheckButton" id="useXScrnList">
-                    <property name="label" translatable="yes">Use XScreenSaver</property>
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="receives-default">False</property>
-                    <property name="halign">center</property>
-                    <property name="margin-bottom">5</property>
-                    <property name="draw-indicator">True</property>
-                    <signal name="toggled" handler="toggle_xscreen_list" swapped="no"/>
+                    <property name="can-focus">False</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin-top">10</property>
+                        <property name="margin-bottom">10</property>
+                        <property name="label" translatable="yes">Playback Resolutions</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin-top">10</property>
+                        <property name="margin-bottom">10</property>
+                        <property name="label" translatable="yes">Position Offset</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -286,35 +374,85 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkScrolledWindow">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="shadow-type">in</property>
+                    <property name="can-focus">False</property>
                     <child>
-                      <object class="GtkTreeView" id="xScreenSvrList">
+                      <object class="GtkComboBoxText" id="playbackResolution">
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can-focus">True</property>
-                        <property name="model">XScreensaverStore</property>
-                        <property name="headers-visible">False</property>
-                        <signal name="button-press-event" handler="preview_xscreensaver" swapped="no"/>
-                        <signal name="cursor-changed" handler="pass_xscreen_value" swapped="no"/>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection"/>
-                        </child>
-                        <child>
-                          <object class="GtkTreeViewColumn" id="listColumn">
-                            <property name="title" translatable="yes">XScreensaves</property>
-                            <child>
-                              <object class="GtkCellRendererText"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
-                            </child>
-                          </object>
-                        </child>
+                        <property name="can-focus">False</property>
+                        <property name="active">3</property>
+                        <items>
+                          <item translatable="yes">7680x4320</item>
+                          <item translatable="yes">3840x2160</item>
+                          <item translatable="yes">2048x1080</item>
+                          <item translatable="yes">1920x1080</item>
+                          <item translatable="yes">1440x720</item>
+                          <item translatable="yes">1600x900</item>
+                          <item translatable="yes">1280x720</item>
+                          <item translatable="yes">800x600</item>
+                        </items>
                       </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
+                    <child>
+                      <object class="GtkComboBoxText" id="monitorOffsetData">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-top">10</property>
+                    <property name="margin-bottom">5</property>
+                    <property name="label" translatable="yes">Save Path</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="saveLoc">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="active">0</property>
+                    <items>
+                      <item translatable="yes">.animatedBGstarter.sh</item>
+                      <item translatable="yes">.animatedBGstarter2.sh</item>
+                      <item translatable="yes">.animatedBGstarter3.sh</item>
+                    </items>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -324,267 +462,121 @@
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
+              <!-- n-columns=3 n-rows=3 -->
+              <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="vexpand">False</property>
-                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Save</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="margin-top">10</property>
-                            <property name="margin-bottom">10</property>
-                            <property name="label" translatable="yes">Playback Resolutions</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="margin-top">10</property>
-                            <property name="margin-bottom">10</property>
-                            <property name="label" translatable="yes">Position Offset</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <child>
-                          <object class="GtkComboBoxText" id="playbackResolution">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="active">3</property>
-                            <items>
-                              <item translatable="yes">7680x4320</item>
-                              <item translatable="yes">3840x2160</item>
-                              <item translatable="yes">2048x1080</item>
-                              <item translatable="yes">1920x1080</item>
-                              <item translatable="yes">1440x720</item>
-                              <item translatable="yes">1600x900</item>
-                              <item translatable="yes">1280x720</item>
-                              <item translatable="yes">800x600</item>
-                            </items>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkComboBoxText" id="monitorOffsetData">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="image">saveImage</property>
+                    <property name="always-show-image">True</property>
+                    <signal name="clicked" handler="save_to_file" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">(Re)Start</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="margin-top">10</property>
-                        <property name="margin-bottom">5</property>
-                        <property name="label" translatable="yes">Save Path</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBoxText" id="saveLoc">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="active">0</property>
-                        <items>
-                          <item translatable="yes">.animatedBGstarter.sh</item>
-                          <item translatable="yes">.animatedBGstarter2.sh</item>
-                          <item translatable="yes">.animatedBGstarter3.sh</item>
-                        </items>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="image">startImage</property>
+                    <property name="always-show-image">True</property>
+                    <signal name="clicked" handler="apply_settings" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                   </packing>
                 </child>
                 <child>
-                  <!-- n-columns=3 n-rows=3 -->
-                  <object class="GtkGrid">
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Stop</property>
                     <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <child>
-                      <object class="GtkButton">
-                        <property name="label" translatable="yes">Save</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="vexpand">True</property>
-                        <property name="image">saveImage</property>
-                        <property name="always-show-image">True</property>
-                        <signal name="clicked" handler="save_to_file" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="left-attach">1</property>
-                        <property name="top-attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton">
-                        <property name="label" translatable="yes">(Re)Start</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="vexpand">True</property>
-                        <property name="image">startImage</property>
-                        <property name="always-show-image">True</property>
-                        <signal name="clicked" handler="apply_settings" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="left-attach">0</property>
-                        <property name="top-attach">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton">
-                        <property name="label" translatable="yes">Stop</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="vexpand">True</property>
-                        <property name="image">stopImage</property>
-                        <property name="always-show-image">True</property>
-                        <signal name="clicked" handler="kill_xwinwrap" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="left-attach">0</property>
-                        <property name="top-attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton">
-                        <property name="label" translatable="yes">Close</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="vexpand">True</property>
-                        <property name="image">closeImage</property>
-                        <property name="always-show-image">True</property>
-                        <signal name="clicked" handler="close_program" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="left-attach">1</property>
-                        <property name="top-attach">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="image">stopImage</property>
+                    <property name="always-show-image">True</property>
+                    <signal name="clicked" handler="kill_xwinwrap" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
                   </packing>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="label" translatable="yes">Close</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="image">closeImage</property>
+                    <property name="always-show-image">True</property>
+                    <signal name="clicked" handler="close_program" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="pack-type">end</property>
-                <property name="position">1</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="padding">1</property>
+            <property name="fill">False</property>
+            <property name="pack-type">end</property>
             <property name="position">1</property>
           </packing>
         </child>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="padding">1</property>
+        <property name="position">1</property>
+      </packing>
     </child>
   </object>
   <object class="GtkPopover" id="demoPreviewPopWindow">
@@ -691,6 +683,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
+                <property name="image">closePopupImage2</property>
                 <property name="always-show-image">True</property>
                 <signal name="clicked" handler="close_image_popup" swapped="no"/>
               </object>
@@ -770,6 +763,7 @@
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Set Custom Default Path</property>
                 <property name="placeholder-text" translatable="yes">Set Custom Start Path</property>
+                <signal name="changed" handler="update_start_path" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -808,6 +802,7 @@
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Set Custom Video Player</property>
                 <property name="placeholder-text" translatable="yes">Set Custom Video Player</property>
+                <signal name="changed" handler="update_default_player" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -846,6 +841,7 @@
                 <property name="can-focus">True</property>
                 <property name="tooltip-text" translatable="yes">Set Custom Image Viewer</property>
                 <property name="placeholder-text" translatable="yes">Set Custom Image Viewer</property>
+                <signal name="changed" handler="update_default_img_viewer" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
