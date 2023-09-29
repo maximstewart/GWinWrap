@@ -1,12 +1,14 @@
 # GWinWrap
-GWinWrap is a Gtk with Python gui to select videos for XWinWrap, images for Nitrogen Wallpaper Manager, and gifs for Gifsicle.
-It includes the XWinWrap binary and source code for Shantanu Goel's version of XWinWrap.
+GWinWrap is a Python application with a Gtk UI to select videos, gifs (or other images), or an xscreensaver as your desktop wallpaper/background.
+This includes the XWinWrap binary and source code from Shantanu Goel's version of XWinWrap.
 
 # Notes
 * Need python 2+
-* Need PyGObject
-* When you first run the application and save settings for a screen, you need to chmod 744 the new file(s) in your $HOME directory.
+* Need PyGObject and Gtk
 * A settings file per screen is generated.
+
+# Install
+` sudo pacman -Sy mpv gifsicle nitrogen xscreensaver `
 
 
 # Images

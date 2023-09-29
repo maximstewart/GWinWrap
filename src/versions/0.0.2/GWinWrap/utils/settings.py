@@ -16,25 +16,25 @@ from .logger import Logger
 
 class Settings:
     def __init__(self):
-        self._SCRIPT_PTH      = os.path.dirname(os.path.realpath(__file__))
-        self._USER_HOME       = os.path.expanduser('~')
-        self._USR_PATH        = f"/usr/share/{app_name.lower()}"
-        self._USR_PATH_CONFIG = f"{self._USR_PATH}/settings.json"
-        self._CONFIG_PATH     = f"{self._USER_HOME}/.config/{app_name.lower()}"
-        self._GLADE_FILE      = f"{self._CONFIG_PATH}/Main_Window.glade"
-        self._CSS_FILE        = f"{self._CONFIG_PATH}/stylesheet.css"
-        self._DEFAULT_ICONS   = f"{self._CONFIG_PATH}/icons"
-        self._PID_FILE        = f"{self._CONFIG_PATH}/{app_name.lower()}.pid"
-        self._WINDOW_ICON     = f"{self._DEFAULT_ICONS}/{app_name.lower()}.png"
-        self._CONFIG_FILE     = f"{self._CONFIG_PATH}/settings.json"
+        self._SCRIPT_PTH       = os.path.dirname(os.path.realpath(__file__))
+        self._USER_HOME        = os.path.expanduser('~')
+        self._USR_PATH         = f"/usr/share/{app_name.lower()}"
+        self._USR_CONFIG_FILE  = f"{self._USR_PATH}/settings.json"
+        self._HOME_CONFIG_PATH = f"{self._USER_HOME}/.config/{app_name.lower()}"
+        self._DEFAULT_ICONS    = f"{self._HOME_CONFIG_PATH}/icons"
+        self._CONFIG_FILE      = f"{self._HOME_CONFIG_PATH}/settings.json"
+        self._GLADE_FILE       = f"{self._HOME_CONFIG_PATH}/Main_Window.glade"
+        self._CSS_FILE         = f"{self._HOME_CONFIG_PATH}/stylesheet.css"
+        self._PID_FILE         = f"{self._HOME_CONFIG_PATH}/{app_name.lower()}.pid"
+        self._WINDOW_ICON      = f"{self._DEFAULT_ICONS}/{app_name.lower()}.png"
 
-        if not os.path.exists(self._CONFIG_PATH):
-            os.mkdir(self._CONFIG_PATH)
+        if not os.path.exists(self._HOME_CONFIG_PATH):
+            os.mkdir(self._HOME_CONFIG_PATH)
 
         if not os.path.exists(self._CONFIG_FILE):
             import shutil
             try:
-                shutil.copyfile(self._USR_PATH_CONFIG, self._CONFIG_FILE)
+                shutil.copyfile(self._USR_CONFIG_FILE, self._CONFIG_FILE)
             except Exception as e:
                 raise
 
@@ -47,8 +47,11 @@ class Settings:
         if not os.path.exists(self._WINDOW_ICON):
             self._WINDOW_ICON  = f"{self.DEFAULT_ICONS}/{app_name.lower()}.png"
 
+        thumbnail_path = f"{self._USER_HOME}/.thumbnails/normal"
+        if not os.path.exists(thumbnail_path):
+            os.system(f"mkdir -p '{thumbnail_path}'")
 
-        self._logger         = Logger(self._CONFIG_PATH).get_logger()
+        self._logger         = Logger(self._HOME_CONFIG_PATH).get_logger()
         self._builder        = Gtk.Builder()
         self._builder.add_from_file(self._GLADE_FILE)
 
